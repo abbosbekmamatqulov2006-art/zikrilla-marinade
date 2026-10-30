@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, File, UploadFile
 from pydantic import BaseModel
 from sqlalchemy.orm import Session, selectinload
 
+from .. import loyalty_sync
 from ..auth import api_error, db_session, require_admin
 from ..models import LoyaltyTx, Order, OrderItem, Product, User
 from ..schemas import order_json, product_json
@@ -48,7 +49,7 @@ def set_status(order_id: str, status: str, db: Session = Depends(db_session)):
     prev = o.status
     o.status = status
 
-    if status == "done" and o.points_earned == 0:
+    if status == "done" and o.points_earned == 0 and not loyalty_sync.iiko_mode():
         pct = cashback_percent(db)
         earned = 0
         for it in o.items:

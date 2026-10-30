@@ -10,6 +10,7 @@ from .. import config
 from ..auth import api_error, current_user, db_session, make_token
 from ..models import OtpCode, User, now
 from ..schemas import user_json
+from .. import loyalty_sync
 from ..sms import SmsError, send_sms
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -123,4 +124,5 @@ def register(body: RegisterIn, user: User = Depends(current_user), db: Session =
     _apply_profile(user, body)
     db.add(user)
     db.commit()
+    loyalty_sync.sync_customer_async(user.id)
     return {"user": user_json(user)}

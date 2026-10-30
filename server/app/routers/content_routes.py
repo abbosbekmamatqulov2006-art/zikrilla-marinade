@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+from .. import iiko, loyalty_sync
 from ..auth import api_error, current_user, db_session, require_admin
 from ..models import LoyaltyTx, Order, Store, User
 from ..schemas import loyalty_json, store_json, tier_of
@@ -41,7 +42,8 @@ def public_settings(db: Session = Depends(db_session)):
 def my_loyalty(user: User = Depends(current_user), db: Session = Depends(db_session)):
     rows = (db.query(LoyaltyTx).filter(LoyaltyTx.user_id == user.id)
             .order_by(LoyaltyTx.created_at.desc()).limit(50).all())
-    return {"loyalty": loyalty_json(user), "history": [_tx_json(t) for t in rows]}
+    return {"loyalty": loyalty_sync.loyalty_payload(user, loyalty_json(user)),
+            "history": [_tx_json(t) for t in rows]}
 
 
 # =================== sozlamalar ===================
@@ -159,7 +161,8 @@ def _customer_json(u: User, db: Session) -> dict:
     rows = (db.query(LoyaltyTx).filter(LoyaltyTx.user_id == u.id)
             .order_by(LoyaltyTx.created_at.desc()).limit(15).all())
     return {"id": u.id, "phone": u.phone, "name": f"{u.first_name} {u.last_name}".strip(),
-            "registered": u.registered, "balance": u.points, "lifetime": u.points_lifetime,
+            "registered": u.registered, "balance": loyalty_sync.balance(u), "lifetime": u.points_lifetime,
+            "source": "iiko" if loyalty_sync.iiko_mode() else "local",
             "tier": tier_of(u.points_lifetime), "history": [_tx_json(t) for t in rows]}
 
 
@@ -167,12 +170,33 @@ def _customer_json(u: User, db: Session) -> dict:
 def kassa_lookup(phone: str, db: Session = Depends(db_session)):
     p = _phone(phone)
     u = _customer(db, p)
+    if u is None and loyalty_sync.iiko_mode():
+        # bizning bazada yo'q, lekin iiko kassasida ochilgan mijoz
+        try:
+            info = iiko.customer_info(p)
+        except iiko.IikoError:
+            info = None
+        if info:
+            return {"phone": p, "percent": cashback_percent(db), "maxShare": cashback_max_share(db),
+                    "iikoMode": True,
+                    "customer": {"id": None, "phone": p, "registered": False, "source": "iiko",
+                                 "name": " ".join(x for x in (info.get("name"), info.get("surname")) if x),
+                                 "balance": iiko.wallet_balance(info), "lifetime": 0, "tier": "bronze",
+                                 "history": []}}
     return {"phone": p, "customer": _customer_json(u, db) if u else None,
-            "percent": cashback_percent(db), "maxShare": cashback_max_share(db)}
+            "percent": cashback_percent(db), "maxShare": cashback_max_share(db),
+            "iikoMode": loyalty_sync.iiko_mode()}
+
+
+def _block_in_iiko_mode():
+    if loyalty_sync.iiko_mode():
+        raise api_error(409, "iiko_mode", "Keshbek endi iiko kassasida beriladi va yechiladi. "
+                                           "Mijozni iiko kassasida telefon raqami bilan chekka biriktiring.")
 
 
 @admin.post("/kassa/earn")
 def kassa_earn(body: EarnIn, db: Session = Depends(db_session)):
+    _block_in_iiko_mode()
     p = _phone(body.phone)
     if body.amount <= 0 or body.amount > 100_000_000:
         raise api_error(400, "bad_amount", "Xarid summasi noto'g'ri")
@@ -191,6 +215,7 @@ def kassa_earn(body: EarnIn, db: Session = Depends(db_session)):
 
 @admin.post("/kassa/spend")
 def kassa_spend(body: SpendIn, db: Session = Depends(db_session)):
+    _block_in_iiko_mode()
     p = _phone(body.phone)
     u = _customer(db, p)
     if u is None:
@@ -211,6 +236,7 @@ def kassa_spend(body: SpendIn, db: Session = Depends(db_session)):
 
 @admin.post("/kassa/undo/{tx_id}")
 def kassa_undo(tx_id: int, db: Session = Depends(db_session)):
+    _block_in_iiko_mode()
     t = db.get(LoyaltyTx, tx_id)
     if t is None or t.reason not in ("kassa_earn", "kassa_spend"):
         raise api_error(404, "not_found", "Bekor qilinadigan kassa amali topilmadi")

@@ -102,3 +102,95 @@ def status() -> dict:
         "externalMenus": menus,
         "orgMapCovered": sorted(ORG_MAP.keys()),
     }
+
+
+# ================= iikoCard (loyallik) =================
+# Mijozlar bazasi butun tarmoq uchun bitta; so'rovlar bitta tashkilot nomidan yuboriladi.
+LOYALTY_ORG = os.getenv("IIKO_LOYALTY_ORG", ORG_MAP["yunusobod"])
+_program_cache: dict | None = None
+_program_at: float = 0.0
+
+
+def iiko_phone(phone: str) -> str:
+    """998XXXXXXXXX -> +998XXXXXXXXX (iiko shu formatni kutadi)."""
+    return "+" + phone.lstrip("+")
+
+
+def loyalty_program() -> dict:
+    """Faol bonus dasturi: {'id', 'name', 'walletId'}. 1 soat keshlanadi."""
+    global _program_cache, _program_at
+    if _program_cache and time.time() - _program_at < 3600:
+        return _program_cache
+    d = _post("/api/1/loyalty/iiko/program", {"organizationId": LOYALTY_ORG, "withoutMarketingCampaigns": True})
+    progs = d.get("Programs") or d.get("programs") or []
+    active = [p for p in progs if p.get("isActive")] or progs
+    if not active:
+        raise IikoError("iikoCard: faol loyallik dasturi topilmadi")
+    p = active[0]
+    _program_cache = {"id": p.get("id"), "name": p.get("name"), "walletId": p.get("walletId")}
+    _program_at = time.time()
+    return _program_cache
+
+
+def customer_info(phone: str) -> dict | None:
+    """Mijoz iiko'da bo'lsa ma'lumoti, bo'lmasa None."""
+    r = httpx.post(
+        f"{IIKO_BASE}/api/1/loyalty/iiko/customer/info",
+        json={"organizationId": LOYALTY_ORG, "type": "phone", "phone": iiko_phone(phone)},
+        headers={"Authorization": f"Bearer {_get_token()}"},
+        timeout=30,
+    )
+    if r.status_code == 200:
+        d = r.json()
+        return d if d.get("id") else None
+    if r.status_code == 400:          # iiko "bunday mijoz yo'q" ni 400 bilan qaytaradi
+        log.info("iiko customer/info %s: %s", phone, r.text[:200])
+        return None
+    raise IikoError(f"iiko customer/info: {r.status_code} {r.text[:300]}")
+
+
+def wallet_balance(info: dict) -> int:
+    """Mijozning bonus hamyonidagi balans (so'm)."""
+    wallet_id = None
+    try:
+        wallet_id = loyalty_program().get("walletId")
+    except IikoError:
+        pass
+    total = 0.0
+    for w in info.get("walletBalances") or []:
+        if (wallet_id and w.get("id") == wallet_id) or (not wallet_id and w.get("type") == 1):
+            total += float(w.get("balance") or 0)
+    return int(round(total))
+
+
+def ensure_customer(phone: str, name: str = "", surname: str = "") -> dict:
+    """Mijozni iiko'da topadi yoki ochadi va bonus dasturiga qo'shadi. Qaytaradi: customer info."""
+    info = customer_info(phone)
+    if info is None:
+        body = {"organizationId": LOYALTY_ORG, "phone": iiko_phone(phone)}
+        if name:
+            body["name"] = name
+        if surname:
+            body["surName"] = surname
+        cid = _post("/api/1/loyalty/iiko/customer/create_or_update", body).get("id")
+        if not cid:
+            raise IikoError("iiko: mijoz yaratilmadi")
+        info = {"id": cid, "walletBalances": []}
+    prog = loyalty_program()
+    has_wallet = any(w.get("id") == prog.get("walletId") for w in info.get("walletBalances") or [])
+    if not has_wallet and prog.get("id"):
+        try:
+            _post("/api/1/loyalty/iiko/customer/program/add",
+                  {"organizationId": LOYALTY_ORG, "customerId": info["id"], "programId": prog["id"]})
+        except IikoError as e:      # allaqachon dasturda bo'lsa iiko xato qaytarishi mumkin
+            log.info("program/add: %s", e)
+        info = customer_info(phone) or info
+    return info
+
+
+def topup(customer_id: str, amount: int, comment: str) -> None:
+    prog = loyalty_program()
+    _post("/api/1/loyalty/iiko/customer/wallet/topup", {
+        "organizationId": LOYALTY_ORG, "customerId": customer_id,
+        "walletId": prog["walletId"], "sum": amount, "comment": comment,
+    })

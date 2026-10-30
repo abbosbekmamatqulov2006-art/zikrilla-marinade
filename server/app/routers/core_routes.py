@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session, selectinload
 
 from .. import config, telegram
+from .. import loyalty_sync
 from ..auth import api_error, current_user, db_session
 from ..models import LoyaltyTx, Order, OrderItem, Product, Store, User
 from ..routers.auth_routes import RegisterIn, _apply_profile
@@ -14,7 +15,7 @@ router = APIRouter(tags=["core"])
 # ---------------- profil ----------------
 @router.get("/me")
 def me(user: User = Depends(current_user)):
-    return {"user": user_json(user), "loyalty": loyalty_json(user)}
+    return {"user": user_json(user), "loyalty": loyalty_sync.loyalty_payload(user, loyalty_json(user))}
 
 
 @router.patch("/me")
@@ -101,6 +102,8 @@ def create_order(body: OrderIn, user: User = Depends(current_user), db: Session 
     cap = int(subtotal * config.POINTS_MAX_SHARE)
     max_points = (min(cap, user.points) // 1000) * 1000
     use = (min(max(body.pointsToUse, 0), max_points) // 1000) * 1000
+    if loyalty_sync.iiko_mode():
+        use = 0   # iiko rejimida ball faqat kassada ishlatiladi
 
     order = Order(
         user_id=user.id,
