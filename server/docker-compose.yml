@@ -1,0 +1,27 @@
+# Namuna. Ishlab turgan serverdagi fayl biroz farq qilishi mumkin.
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: zikrilla
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./site:/srv/site
+      - ./panel:/srv/panel
+      - ./uploads:/srv/uploads
+
+volumes:
+  pgdata:

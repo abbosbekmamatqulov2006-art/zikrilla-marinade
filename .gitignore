@@ -1,0 +1,32 @@
+# Maxfiy sozlamalar — hech qachon GitHub'ga yuklanmaydi
+.env
+*.env
+!.env.example
+
+# Server
+__pycache__/
+*.pyc
+server/uploads/
+server/web/
+backups/
+*.sql
+*.sql.gz
+
+# Flutter / Android / iOS
+mobile/build/
+mobile/.dart_tool/
+mobile/.flutter-plugins*
+mobile/.packages
+mobile/android/key.properties
+*.jks
+*.keystore
+*.apk
+*.aab
+*.ipa
+mobile/ios/Pods/
+
+# Tizim
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

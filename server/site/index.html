@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zikrilla Marinade — sixlangan marinadlar, Toshkent</title>
+<meta name="description" content="Zikrilla Marinade: sixga terilgan, marinadda yetilgan go'sht. Narxlar, komplektlar, filiallar manzili va telefonlari. Buyurtma — telefon orqali, keshbek — kassada.">
+<meta name="keywords" content="zikrilla, zikrilla marinade, zikrilla marinad, marinad, shashlik, six, Toshkent">
+<link rel="icon" href="/app/assets/assets/img/logo.png">
+<meta property="og:title" content="Zikrilla Marinade — sixlangan marinadlar">
+<meta property="og:description" content="Olovga tayyor go'sht donasiga. Filiallar, narxlar, keshbek.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/app/assets/assets/img/hero_mix.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+<style>
+:root{
+  --brand:#D50C05; --brand-deep:#A81F1B; --brand-soft:#FBEAE9;
+  --ink:#201D1B; --char:#231F1D; --char-2:#2E2825; --char-line:#3A3330;
+  --paper:#FFFFFF; --smoke:#F4F3F1; --line:#E6E4E0;
+  --mut:#6E6E6E; --mut-dk:#A69E98;
+  --leaf:#1F8A4C; --leaf-soft:#E3F2E8; --amber:#C07A0B; --amber-soft:#F8ECD9;
+  --r-m:16px; --r-l:24px;
+  --w: min(1180px, calc(100% - 40px));
+}
+*{box-sizing:border-box; margin:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important} }
+body{font-family:"Archivo",system-ui,sans-serif; color:var(--ink); background:var(--paper); line-height:1.5}
+img,video{display:block; max-width:100%}
+button{font:inherit; cursor:pointer; border:0; background:none; color:inherit}
+input{font:inherit; color:inherit}
+a{color:inherit; text-decoration:none}
+:focus-visible{outline:3px solid var(--brand); outline-offset:2px; border-radius:4px}
+.wrap{width:var(--w); margin-inline:auto}
+.display{font-weight:860; font-variation-settings:"wdth" 118; letter-spacing:-.01em; line-height:1.03; text-wrap:balance}
+[hidden]{display:none!important}
+
+/* announcement */
+.ann{background:var(--brand); color:#fff; text-align:center; font-weight:700; font-size:14.5px; padding:9px 16px}
+
+/* top bar */
+.top{position:sticky; top:0; z-index:40; background:rgba(255,255,255,.94); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+.top .wrap{display:flex; align-items:center; gap:20px; height:68px}
+.logo{display:flex; align-items:center; gap:10px; font-weight:860; font-variation-settings:"wdth" 118; font-size:19px; line-height:1}
+.logo img{height:40px; width:auto; display:block}
+.logo small{display:block; font-weight:600; font-variation-settings:"wdth" 100; font-size:10.5px; letter-spacing:.1em; color:var(--mut)}
+nav.main{display:flex; gap:2px; margin-inline:auto}
+nav.main a{padding:9px 13px; border-radius:999px; font-weight:650; color:var(--mut)}
+nav.main a:hover{background:var(--smoke); color:var(--ink)}
+.acts{display:flex; align-items:center; gap:10px}
+.lang{display:flex; border:1px solid var(--line); border-radius:999px; padding:3px}
+.lang button{padding:4px 10px; border-radius:999px; font-size:13px; font-weight:750; color:var(--mut)}
+.lang button[aria-pressed="true"]{background:var(--ink); color:#fff}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:11px 20px; border-radius:999px; font-weight:800; transition:background .12s, transform .12s; white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-brand{background:var(--brand); color:#fff} .btn-brand:hover{background:var(--brand-deep)}
+.btn-ink{background:var(--ink); color:#fff} .btn-ink:hover{background:#000}
+.btn-ghost{border:1.5px solid var(--line)} .btn-ghost:hover{border-color:var(--ink)}
+.btn-tg{background:#2AABEE; color:#fff} .btn-tg:hover{background:#1E96D1}
+.btn[disabled]{opacity:.45; cursor:default}
+.ico{width:18px; height:18px; flex:none}
+
+/* hero */
+.hero{background:var(--char); color:#fff; overflow:hidden}
+.hero .wrap{display:grid; grid-template-columns:1.05fr .95fr; min-height:520px; align-items:center; gap:48px; padding-block:52px}
+.hero h1{font-size:clamp(42px,5.1vw,74px); max-width:12ch}
+.hero p.lead{margin-top:20px; font-size:19px; color:#D3CCC7; max-width:44ch}
+.hero .cta{display:flex; gap:12px; margin-top:30px; flex-wrap:wrap}
+.hero .facts{display:flex; gap:36px; margin-top:40px; padding-top:24px; border-top:1px solid var(--char-line); flex-wrap:wrap}
+.hero .facts b{display:block; font-size:22px; font-weight:860; font-variation-settings:"wdth" 114}
+.hero .facts span{color:var(--mut-dk); font-size:14px}
+.hero-pic{position:relative; align-self:stretch; min-height:360px}
+.hero-pic img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:var(--r-l)}
+.hero-pic::after{content:""; position:absolute; inset:0; border-radius:var(--r-l); background:linear-gradient(90deg,var(--char) 0%,transparent 36%)}
+
+/* how to order */
+.how{border-bottom:1px solid var(--line); background:var(--smoke)}
+.how .wrap{display:grid; grid-template-columns:auto 1fr; gap:28px; align-items:center; padding-block:26px}
+.how h2{font-size:22px; font-weight:860; font-variation-settings:"wdth" 112; max-width:15ch}
+.steps{display:flex; gap:12px; flex-wrap:wrap; justify-content:flex-end}
+.step{display:flex; gap:10px; align-items:center; background:#fff; border:1px solid var(--line); border-radius:14px; padding:10px 14px; font-size:14.5px}
+.step i{font-style:normal; width:26px; height:26px; border-radius:999px; background:var(--ink); color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:13px; flex:none}
+
+/* sections */
+section{padding-block:68px}
+.sec-head{display:flex; align-items:end; justify-content:space-between; gap:20px; margin-bottom:32px; flex-wrap:wrap}
+.sec-head h2{font-size:clamp(30px,3.2vw,44px)}
+.sec-head p{color:var(--mut); max-width:52ch}
+
+/* menu */
+.menu-grid{display:grid; grid-template-columns:220px 1fr; gap:40px; align-items:start}
+.rail{position:sticky; top:92px; display:flex; flex-direction:column; gap:4px}
+.rail button{text-align:left; padding:11px 14px; border-radius:12px; font-weight:700; color:var(--mut); border-left:3px solid transparent}
+.rail button:hover{background:var(--smoke); color:var(--ink)}
+.rail button[aria-pressed="true"]{color:var(--brand); border-left-color:var(--brand); background:var(--brand-soft)}
+.products{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:22px}
+.card{border:1px solid var(--line); border-radius:var(--r-m); overflow:hidden; background:#fff; display:flex; flex-direction:column; text-align:left; width:100%}
+.card:hover{border-color:#CFCBC6}
+.card .ph{position:relative; aspect-ratio:4/3; background:var(--smoke)}
+.card .ph img{width:100%; height:100%; object-fit:cover}
+.tag{position:absolute; top:10px; left:10px; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:800}
+.tag.low{background:var(--amber-soft); color:var(--amber)} .tag.hot{background:var(--brand-soft); color:var(--brand)} .tag.deal{background:var(--leaf-soft); color:var(--leaf)}
+.vid-badge{position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,.6); color:#fff; font-size:12px; font-weight:800; padding:4px 9px; border-radius:999px}
+.card .bd{padding:15px 16px 17px; display:flex; flex-direction:column; gap:5px; flex:1}
+.card h3{font-size:18px; font-weight:800}
+.card .sub{color:var(--mut); font-size:13.5px; flex:1}
+.price{font-weight:860; font-variation-settings:"wdth" 112; font-size:20px; margin-top:8px}
+.price small{color:var(--mut); font-weight:600; font-size:13px; font-variation-settings:"wdth" 100}
+.empty{color:var(--mut); padding:30px 0}
+
+/* calculator */
+.calc{background:var(--char); color:#fff; padding-block:50px}
+.calc .wrap{display:grid; grid-template-columns:1fr auto; gap:32px; align-items:center}
+.calc h2{font-size:clamp(26px,2.6vw,36px)}
+.calc .out{margin-top:10px; color:#D3CCC7; font-size:17px}
+.calc .out b{color:#fff}
+.knobs{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
+.knob{background:var(--char-2); border-radius:var(--r-m); padding:12px 16px; display:flex; align-items:center; gap:14px}
+.knob span{color:var(--mut-dk); font-size:14px}
+.stepper{display:flex; align-items:center; background:#fff; color:var(--ink); border-radius:999px}
+.stepper button{width:36px; height:38px; font-size:18px; font-weight:800}
+.stepper b{min-width:28px; text-align:center}
+
+/* branches */
+.branches{background:var(--smoke)}
+.br-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:18px}
+.br{background:#fff; border:1px solid var(--line); border-radius:var(--r-m); overflow:hidden; display:flex; flex-direction:column}
+.br img{aspect-ratio:16/9; object-fit:cover; width:100%}
+.br .in{padding:18px 20px 20px; display:flex; flex-direction:column; gap:8px; flex:1}
+.br h3{font-weight:800; font-size:18px}
+.br .adr{color:var(--mut); font-size:14.5px; flex:1}
+.br .hrs{font-weight:700; font-size:14px}
+.open{color:var(--leaf)} .closed{color:var(--brand-deep)}
+.br .row{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
+.br .row .btn{padding:9px 14px; font-size:14px}
+
+/* videos */
+.vids{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:20px}
+.vid{border-radius:var(--r-m); overflow:hidden; background:#000}
+.vid iframe,.vid video{width:100%; aspect-ratio:16/9; border:0; display:block}
+.vid-t{font-weight:750; margin-top:10px}
+
+/* cashback */
+.cash{background:var(--leaf); color:#fff}
+.cash .wrap{display:grid; grid-template-columns:1.15fr .85fr; gap:40px; align-items:center}
+.cash h2{font-size:clamp(28px,3vw,42px)}
+.cash p{margin-top:14px; color:#DFF0E6; font-size:17px; max-width:50ch}
+.cash .cta{margin-top:24px}
+.cash .btn-light{background:#fff; color:var(--leaf)}
+.cash ol{list-style:none; padding:0; display:flex; flex-direction:column; gap:10px; counter-reset:c}
+.cash li{background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.22); border-radius:var(--r-m); padding:14px 18px 14px 54px; position:relative; font-weight:650; counter-increment:c}
+.cash li::before{content:counter(c); position:absolute; left:16px; top:50%; transform:translateY(-50%); width:26px; height:26px; border-radius:999px; background:#fff; color:var(--leaf); font-weight:860; display:flex; align-items:center; justify-content:center; font-size:13px}
+
+/* footer */
+footer{background:var(--char); color:#B6AEA8; padding-block:52px 34px; font-size:14.5px}
+footer .wrap{display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:40px}
+footer h4{color:#fff; font-weight:800; margin-bottom:12px; font-size:15px}
+footer li{list-style:none; margin-bottom:8px}
+footer ul{padding:0}
+footer a:hover{color:#fff}
+footer .tel{font-size:24px; font-weight:860; font-variation-settings:"wdth" 112; color:#fff; display:block; margin-top:14px}
+.socs{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px}
+.socs a{border:1px solid var(--char-line); border-radius:999px; padding:7px 14px; color:#fff; font-weight:700; font-size:13.5px}
+.socs a:hover{background:var(--char-2)}
+.fine{grid-column:1/-1; border-top:1px solid var(--char-line); margin-top:24px; padding-top:18px; color:#8B827C; font-size:13px}
+
+/* modal */
+.scrim{position:fixed; inset:0; background:rgba(22,18,16,.55); z-index:60; display:none}
+.scrim.on{display:block}
+.modal{position:fixed; inset:0; z-index:70; display:none; align-items:center; justify-content:center; padding:16px}
+.modal.on{display:flex}
+.panel{background:#fff; border-radius:var(--r-l); width:min(460px,100%); max-height:92vh; overflow:auto; padding:26px; position:relative}
+.panel.wide{width:min(940px,100%); padding:0}
+.x{position:absolute; top:14px; right:14px; width:38px; height:38px; border-radius:999px; background:var(--smoke); font-size:17px; z-index:2}
+.panel h3{font-size:22px; font-weight:860; font-variation-settings:"wdth" 112; margin-bottom:6px}
+.panel .sub{color:var(--mut); font-size:14.5px; margin-bottom:18px}
+.pd{display:grid; grid-template-columns:1.1fr .9fr}
+.gal{background:var(--smoke); display:flex; flex-direction:column}
+.gal .main{aspect-ratio:4/3; background:#000; display:flex; align-items:center; justify-content:center}
+.gal .main img,.gal .main video,.gal .main iframe{width:100%; height:100%; object-fit:cover; border:0}
+.thumbs{display:flex; gap:8px; padding:10px; overflow-x:auto}
+.thumbs button{width:64px; height:64px; border-radius:10px; overflow:hidden; flex:none; border:2px solid transparent; position:relative; background:#ddd}
+.thumbs button[aria-pressed="true"]{border-color:var(--brand)}
+.thumbs img{width:100%; height:100%; object-fit:cover}
+.thumbs .pl{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; background:rgba(0,0,0,.35); font-size:20px}
+.pd .info{padding:28px 26px; display:flex; flex-direction:column; gap:10px}
+.pd .info h3{font-size:26px; margin:0}
+.pd .desc{color:#3E3936; white-space:pre-line}
+.pd .ingr{color:var(--mut); font-size:14px}
+.order-box{margin-top:auto; border-top:1px solid var(--line); padding-top:16px; display:flex; flex-direction:column; gap:8px}
+.order-box p{font-size:13.5px; color:var(--mut)}
+.form{display:flex; flex-direction:column; gap:12px}
+.fld{display:flex; flex-direction:column; gap:6px}
+.fld label{font-size:13px; font-weight:700; color:var(--mut)}
+.fld input{border:1.5px solid var(--line); border-radius:12px; padding:11px 13px; background:#fff}
+.fld input:focus{border-color:var(--ink); outline:none}
+.err{background:var(--brand-soft); color:var(--brand-deep); border-radius:10px; padding:10px 13px; font-size:13.5px; font-weight:600; display:none}
+.err.on{display:block}
+.ok{background:var(--leaf-soft); color:var(--leaf); border-radius:10px; padding:10px 13px; font-size:13.5px; font-weight:700}
+.lcard{background:var(--leaf); color:#fff; border-radius:var(--r-m); padding:18px 20px}
+.lcard .bal{font-size:34px; font-weight:860; font-variation-settings:"wdth" 114}
+.lcard .tr{display:flex; justify-content:space-between; font-size:14px; color:#DFF0E6}
+.qr{display:flex; flex-direction:column; align-items:center; gap:8px; padding:16px; border:1px dashed var(--line); border-radius:var(--r-m)}
+.qr #qrBox{background:#fff; padding:8px}
+.qr span{font-size:13px; color:var(--mut); text-align:center}
+.hist{display:flex; flex-direction:column; gap:6px; max-height:220px; overflow:auto}
+.hist div{display:flex; justify-content:space-between; font-size:14px; border-bottom:1px solid var(--line); padding:6px 0}
+.plus{color:var(--leaf); font-weight:800} .minus{color:var(--brand-deep); font-weight:800}
+
+/* floating call (mobile) */
+.fab{position:fixed; right:16px; bottom:16px; z-index:50; display:none; box-shadow:0 10px 30px rgba(0,0,0,.25)}
+
+/* responsive */
+@media (max-width:980px){
+  .hero .wrap{grid-template-columns:1fr; min-height:0}
+  .hero-pic{min-height:250px; order:-1}
+  .hero-pic::after{background:linear-gradient(0deg,var(--char) 0%,transparent 40%)}
+  .menu-grid{grid-template-columns:1fr}
+  .rail{position:static; flex-direction:row; overflow-x:auto; gap:8px; padding-bottom:4px}
+  .rail button{border-left:0; border-bottom:3px solid transparent; white-space:nowrap}
+  .rail button[aria-pressed="true"]{border-left:0; border-bottom-color:var(--brand)}
+  .calc .wrap,.cash .wrap,.how .wrap{grid-template-columns:1fr}
+  .steps{justify-content:flex-start}
+  .pd{grid-template-columns:1fr}
+  footer .wrap{grid-template-columns:1fr 1fr}
+}
+@media (max-width:680px){
+  nav.main,.top .call-top{display:none}
+  .fab{display:inline-flex}
+  section{padding-block:50px}
+  footer .wrap{grid-template-columns:1fr}
+  .top .wrap{gap:8px}
+  .logo img{height:32px}
+  .lang button{padding:4px 8px}
+  #cabBtn{padding:10px 14px}
+}
+</style>
+</head>
+<body>
+
+<div class="ann" id="ann" hidden></div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Zikrilla Marinade"><img src="/app/assets/assets/img/logo.png" alt="Zikrilla Marinade"></a>
+    <nav class="main" aria-label="Bo'limlar">
+      <a href="#menu" data-i="nav_menu">Menyu</a>
+      <a href="#branches" data-i="nav_branches">Filiallar</a>
+      <a href="#videos" data-i="nav_videos" id="navVideos" hidden>Videolar</a>
+      <a href="#cashback" data-i="nav_cash">Keshbek</a>
+    </nav>
+    <div class="acts">
+      <div class="lang" role="group" aria-label="Til">
+        <button data-lang="uz" aria-pressed="true">UZ</button>
+        <button data-lang="ru" aria-pressed="false">РУ</button>
+        <button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="btn btn-brand call-top" id="callTop" href="#"><span data-i="call">Qo'ng'iroq</span></a>
+      <button class="btn btn-ink" id="cabBtn" data-i="cabinet">Kabinet</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" style="padding:0">
+    <div class="wrap">
+      <div>
+        <h1 class="display" id="heroTitle"></h1>
+        <p class="lead" id="heroSub"></p>
+        <div class="cta">
+          <a class="btn btn-brand" id="heroCall" href="#"><span data-i="call_order">Qo'ng'iroq qilib buyurtma berish</span></a>
+          <a class="btn btn-ghost" style="border-color:#4A423E;color:#fff" href="#menu" data-i="see_menu">Menyuni ko'rish</a>
+        </div>
+        <div class="facts">
+          <div><b id="fBr">6</b><span data-i="f_branches">filial</span></div>
+          <div><b>80–85 g</b><span data-i="f_piece">har bir dona</span></div>
+          <div><b id="fCash">5%</b><span data-i="f_cash">keshbek kassada</span></div>
+        </div>
+      </div>
+      <div class="hero-pic"><img id="heroImg" alt="" src="/app/assets/assets/img/hero_mix.jpg"></div>
+    </div>
+  </section>
+
+  <div class="how">
+    <div class="wrap">
+      <h2 data-i="how_h">Buyurtma qanday beriladi</h2>
+      <div class="steps">
+        <div class="step"><i>1</i><span data-i="how_1">Menyudan tanlang</span></div>
+        <div class="step"><i>2</i><span data-i="how_2">Operatorga qo'ng'iroq qiling yoki Telegram'ga yozing</span></div>
+        <div class="step"><i>3</i><span data-i="how_3">Filialdan olib keting yoki yetkazib beramiz</span></div>
+        <div class="step"><i>4</i><span data-i="how_4">To'lov: kartaga yoki kassada</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="menu">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="display" data-i="menu_h">Menyu va narxlar</h2>
+        <p data-i="menu_p">Narxlar dona uchun. Mahsulotni bosing — rasmlar, video va tarkibini ko'rasiz.</p>
+      </div>
+      <div class="menu-grid">
+        <div class="rail" id="rail" role="tablist"></div>
+        <div class="products" id="grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calc">
+    <div class="wrap">
+      <div>
+        <h2 class="display" data-i="calc_h">Sayrga ketyapsizmi?</h2>
+        <p class="out" id="calcOut"></p>
+      </div>
+      <div class="knobs">
+        <div class="knob"><span data-i="calc_people">Kishi</span>
+          <div class="stepper"><button data-k="p" data-d="-1" aria-label="−">−</button><b id="kP">8</b><button data-k="p" data-d="1" aria-label="+">+</button></div></div>
+        <div class="knob"><span data-i="calc_hours">Soat</span>
+          <div class="stepper"><button data-k="h" data-d="-1" aria-label="−">−</button><b id="kH">4</b><button data-k="h" data-d="1" aria-label="+">+</button></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="branches" id="branches">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="display" data-i="br_h">Filiallar</h2>
+        <p data-i="br_p">Yaqin filialga qo'ng'iroq qiling yoki xaritada yo'lni oching.</p>
+      </div>
+      <div class="br-grid" id="brGrid"></div>
+    </div>
+  </section>
+
+  <section id="videos" hidden>
+    <div class="wrap">
+      <div class="sec-head"><h2 class="display" data-i="vid_h">Videolar</h2></div>
+      <div class="vids" id="vids"></div>
+    </div>
+  </section>
+
+  <section class="cash" id="cashback">
+    <div class="wrap">
+      <div>
+        <h2 class="display" id="cashH"></h2>
+        <p id="cashP"></p>
+        <div class="cta"><button class="btn btn-light" id="cashBtn" data-i="cash_btn">Keshbek kartamni ochish</button></div>
+      </div>
+      <ol>
+        <li data-i="c1">Saytda yoki kassada telefon raqamingiz bilan ro'yxatdan o'ting</li>
+        <li data-i="c2">Xarid paytida kassirga QR kodni yoki raqamingizni ayting</li>
+        <li id="c3"></li>
+        <li id="c4"></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <h4>Zikrilla Marinade</h4>
+      <p id="about"></p>
+      <a class="tel" id="ftTel" href="#"></a>
+      <div class="socs" id="socs"></div>
+    </div>
+    <div><h4 data-i="ft_ops">Operatorlar</h4><ul id="ftOps"></ul></div>
+    <div><h4 data-i="nav_branches">Filiallar</h4><ul id="ftBr"></ul></div>
+    <div class="fine" id="fine"></div>
+  </div>
+</footer>
+
+<a class="btn btn-brand fab" id="fab" href="#"><span data-i="call">Qo'ng'iroq</span></a>
+
+<div class="scrim" id="scrim"></div>
+<div class="modal" id="modal"><div class="panel" id="panel"></div></div>
+
+<script>
+/* ============ i18n ============ */
+const T={
+uz:{brand_sub:"MARINADE",nav_menu:"Menyu",nav_branches:"Filiallar",nav_videos:"Videolar",nav_cash:"Keshbek",call:"Qo'ng'iroq",cabinet:"Kabinet",
+call_order:"Qo'ng'iroq qilib buyurtma berish",see_menu:"Menyuni ko'rish",f_branches:"filial",f_piece:"har bir dona",f_cash:"keshbek kassada",
+how_h:"Buyurtma qanday beriladi",how_1:"Menyudan tanlang",how_2:"Operatorga qo'ng'iroq qiling yoki Telegram'ga yozing",how_3:"Filialdan olib keting yoki yetkazib beramiz",how_4:"To'lov: kartaga yoki kassada",
+menu_h:"Menyu va narxlar",menu_p:"Narxlar dona uchun. Mahsulotni bosing — rasmlar, video va tarkibini ko'rasiz.",all:"Hammasi",
+low:"kam qoldi",hot:"achchiq",deal:"hafta taklifi",piece:"dona",sum:"so'm",video:"video",empty_cat:"Bu bo'limda hozircha mahsulot yo'q",
+ingr:"Tarkibi",order_by_phone:"Buyurtma uchun qo'ng'iroq qiling",order_note:"To'lov kartaga yoki kassada. Olib ketish yoki yetkazib berish.",write_tg:"Telegram'ga yozish",
+calc_h:"Sayrga ketyapsizmi?",calc_people:"Kishi",calc_hours:"Soat",calc_out:(s,c,so)=>`Tavsiya: <b>${s} dona six</b> · <b>${c} kg ko'mir</b> · <b>${so} sous</b>`,
+br_h:"Filiallar",br_p:"Yaqin filialga qo'ng'iroq qiling yoki xaritada yo'lni oching.",h24:"24 soat ochiq",open_now:"hozir ochiq",closed_now:"hozir yopiq",yandex:"Yandex xarita",google:"Google xarita",
+vid_h:"Videolar",
+cash_h:(p)=>`Har xariddan ${p}% qaytadi`,cash_p:"Keshbek faqat filial kassasida yoziladi va ishlatiladi. Ballaringizni shu saytdagi kabinetda ko'rib turasiz.",
+c1:"Saytda yoki kassada telefon raqamingiz bilan ro'yxatdan o'ting",c2:"Xarid paytida kassirga QR kodni yoki raqamingizni ayting",c3:(p)=>`Har xariddan ${p}% ball yoziladi`,c4:(m)=>`Keyingi xaridda ballar pul o'rnida — chekning ${m}% gacha`,cash_btn:"Keshbek kartamni ochish",
+ft_ops:"Operatorlar",
+ph_title:"Kabinetga kirish",ph_sub:"Telefon raqamingizni kiriting — kod yuboramiz",phone:"Telefon raqami",get_code:"Kod olish",
+code_title:"Kodni kiriting",code_sub:(p)=>`+${p} raqamiga yuborildi`,code:"SMS kod",verify:"Tasdiqlash",back:"Orqaga",dev_code:(c)=>`Test rejimi — kod: ${c}`,
+reg_title:"Ismingiz",reg_sub:"Kassada sizni tanishlari uchun",fname:"Ism",lname:"Familiya",save:"Saqlash",
+my_h:"Keshbek kartam",balance:"Balans",tier:"Daraja",points:"ball",qr_note:"Kassada shu QR kodni ko'rsating yoki raqamingizni ayting",history:"Harakatlar",no_hist:"Hozircha harakat yo'q",logout:"Chiqish",
+r_kassa_earn:"Xarid uchun",r_kassa_spend:"Ishlatildi",r_kassa_undo:"Bekor qilindi",r_order_earn:"Buyurtma uchun",r_order_spend:"Buyurtmada ishlatildi",r_order_refund:"Qaytarildi",
+err_net:"Server bilan aloqa yo'q. Internetni tekshiring",err_unknown:"Xatolik yuz berdi, qayta urinib ko'ring",err_invalid_code:"Kod noto'g'ri",err_code_expired:"Kod eskirdi — qaytadan oling",err_too_many:"Birozdan so'ng urinib ko'ring",err_phone:"Raqamni to'liq kiriting: +998 90 123 45 67"},
+ru:{brand_sub:"MARINADE",nav_menu:"Меню",nav_branches:"Филиалы",nav_videos:"Видео",nav_cash:"Кэшбэк",call:"Позвонить",cabinet:"Кабинет",
+call_order:"Позвонить и заказать",see_menu:"Смотреть меню",f_branches:"филиалов",f_piece:"каждый кусочек",f_cash:"кэшбэк на кассе",
+how_h:"Как сделать заказ",how_1:"Выберите в меню",how_2:"Позвоните оператору или напишите в Telegram",how_3:"Заберите в филиале или закажите доставку",how_4:"Оплата: на карту или на кассе",
+menu_h:"Меню и цены",menu_p:"Цены за штуку. Нажмите на товар — фото, видео и состав.",all:"Все",
+low:"мало",hot:"острое",deal:"акция недели",piece:"шт",sum:"сум",video:"видео",empty_cat:"В этом разделе пока нет товаров",
+ingr:"Состав",order_by_phone:"Для заказа позвоните",order_note:"Оплата на карту или на кассе. Самовывоз или доставка.",write_tg:"Написать в Telegram",
+calc_h:"Собираетесь на пикник?",calc_people:"Человек",calc_hours:"Часов",calc_out:(s,c,so)=>`Совет: <b>${s} шампуров</b> · <b>${c} кг угля</b> · <b>${so} соуса</b>`,
+br_h:"Филиалы",br_p:"Позвоните в ближайший филиал или откройте маршрут на карте.",h24:"круглосуточно",open_now:"сейчас открыто",closed_now:"сейчас закрыто",yandex:"Яндекс карты",google:"Google карты",
+vid_h:"Видео",
+cash_h:(p)=>`${p}% возвращается с каждой покупки`,cash_p:"Кэшбэк начисляется и списывается только на кассе филиала. Баллы видно в кабинете на этом сайте.",
+c1:"Зарегистрируйтесь по номеру телефона — на сайте или на кассе",c2:"При покупке покажите кассиру QR-код или назовите номер",c3:(p)=>`С каждой покупки начисляется ${p}% баллами`,c4:(m)=>`В следующий раз баллы работают как деньги — до ${m}% чека`,cash_btn:"Открыть карту кэшбэка",
+ft_ops:"Операторы",
+ph_title:"Вход в кабинет",ph_sub:"Введите номер телефона — отправим код",phone:"Номер телефона",get_code:"Получить код",
+code_title:"Введите код",code_sub:(p)=>`Отправлен на +${p}`,code:"Код из SMS",verify:"Подтвердить",back:"Назад",dev_code:(c)=>`Тестовый режим — код: ${c}`,
+reg_title:"Ваше имя",reg_sub:"Чтобы вас узнавали на кассе",fname:"Имя",lname:"Фамилия",save:"Сохранить",
+my_h:"Моя карта кэшбэка",balance:"Баланс",tier:"Уровень",points:"баллов",qr_note:"Покажите этот QR-код на кассе или назовите номер",history:"Операции",no_hist:"Операций пока нет",logout:"Выйти",
+r_kassa_earn:"За покупку",r_kassa_spend:"Списано",r_kassa_undo:"Отменено",r_order_earn:"За заказ",r_order_spend:"Списано в заказе",r_order_refund:"Возврат",
+err_net:"Нет связи с сервером. Проверьте интернет",err_unknown:"Произошла ошибка, попробуйте ещё раз",err_invalid_code:"Неверный код",err_code_expired:"Код устарел — запросите новый",err_too_many:"Попробуйте чуть позже",err_phone:"Введите номер полностью: +998 90 123 45 67"},
+en:{brand_sub:"MARINADE",nav_menu:"Menu",nav_branches:"Branches",nav_videos:"Videos",nav_cash:"Cashback",call:"Call",cabinet:"My card",
+call_order:"Call to order",see_menu:"See the menu",f_branches:"branches",f_piece:"per piece",f_cash:"cashback at the till",
+how_h:"How to order",how_1:"Pick from the menu",how_2:"Call an operator or message us on Telegram",how_3:"Pick up at a branch or get delivery",how_4:"Pay by card transfer or at the till",
+menu_h:"Menu and prices",menu_p:"Prices are per piece. Tap an item for photos, video and ingredients.",all:"All",
+low:"low stock",hot:"spicy",deal:"deal of the week",piece:"pc",sum:"UZS",video:"video",empty_cat:"Nothing in this section yet",
+ingr:"Ingredients",order_by_phone:"Call to order",order_note:"Pay by card transfer or at the till. Pickup or delivery.",write_tg:"Message on Telegram",
+calc_h:"Heading out for a picnic?",calc_people:"People",calc_hours:"Hours",calc_out:(s,c,so)=>`Suggestion: <b>${s} skewers</b> · <b>${c} kg coal</b> · <b>${so} sauces</b>`,
+br_h:"Branches",br_p:"Call the nearest branch or open directions on the map.",h24:"open 24 hours",open_now:"open now",closed_now:"closed now",yandex:"Yandex Maps",google:"Google Maps",
+vid_h:"Videos",
+cash_h:(p)=>`${p}% back on every purchase`,cash_p:"Cashback is added and spent only at the branch till. Track your points in your card on this site.",
+c1:"Sign up with your phone number — here or at the till",c2:"Show the cashier your QR code or tell your number",c3:(p)=>`Every purchase earns ${p}% in points`,c4:(m)=>`Next time points work like money — up to ${m}% of the bill`,cash_btn:"Open my cashback card",
+ft_ops:"Operators",
+ph_title:"Sign in",ph_sub:"Enter your phone number — we'll text a code",phone:"Phone number",get_code:"Get code",
+code_title:"Enter the code",code_sub:(p)=>`Sent to +${p}`,code:"SMS code",verify:"Confirm",back:"Back",dev_code:(c)=>`Test mode — code: ${c}`,
+reg_title:"Your name",reg_sub:"So the cashier knows you",fname:"First name",lname:"Last name",save:"Save",
+my_h:"My cashback card",balance:"Balance",tier:"Tier",points:"points",qr_note:"Show this QR code at the till or tell your number",history:"Activity",no_hist:"No activity yet",logout:"Sign out",
+r_kassa_earn:"Purchase",r_kassa_spend:"Spent",r_kassa_undo:"Reversed",r_order_earn:"Order",r_order_spend:"Spent on order",r_order_refund:"Refund",
+err_net:"Can't reach the server. Check your connection",err_unknown:"Something went wrong, try again",err_invalid_code:"Wrong code",err_code_expired:"Code expired — request a new one",err_too_many:"Try again in a moment",err_phone:"Enter the full number: +998 90 123 45 67"}
+};
+let lang=(()=>{try{return localStorage.getItem('z_lang')||'uz'}catch(_){return 'uz'}})();
+const t=(k,...a)=>{const v=(T[lang]&&T[lang][k])??T.uz[k]??k;return typeof v==='function'?v(...a):v};
+const L=o=>(o&&(o[lang]||o.uz||o.ru||o.en))||'';
+const fmt=n=>new Intl.NumberFormat('ru-RU').format(n);
+const money=n=>fmt(n)+' '+t('sum');
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const img=p=>!p?'/app/assets/assets/img/logo.png':(p.startsWith('/')||p.startsWith('http')?p:'/app/assets/'+p);
+const telHref=p=>'tel:'+String(p||'').replace(/[^\d+]/g,'');
+const prettyTel=p=>{const d=String(p||'').replace(/\D/g,'');return d.length===12?`+${d.slice(0,3)} ${d.slice(3,5)} ${d.slice(5,8)} ${d.slice(8,10)} ${d.slice(10)}`:(p||'')};
+const ls={get:k=>{try{return localStorage.getItem(k)}catch(_){return null}},set:(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(_){}}};
+
+/* ============ state ============ */
+let S=null, products=[], stores=[], cat='all', token=ls.get('z_token');
+
+async function api(method,path,body){
+  let r;
+  try{ r=await fetch(path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:body?JSON.stringify(body):undefined}); }
+  catch(_){ throw {code:'network'}; }
+  let j={}; try{ j=await r.json(); }catch(_){}
+  if(r.ok) return j;
+  if(r.status===401){ token=null; ls.set('z_token',null); }
+  throw {code:j.error||'unknown',message:j.message};
+}
+const errText=e=>({network:t('err_net'),invalid_code:t('err_invalid_code'),code_expired:t('err_code_expired'),too_many_requests:t('err_too_many'),too_many_attempts:t('err_too_many'),invalid_phone:t('err_phone')}[e.code])||e.message||t('err_unknown');
+
+/* ============ media helpers ============ */
+function ytId(u){const m=String(u).match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:null}
+function mediaEl(m){
+  if(m.type==='video'){
+    const id=ytId(m.url);
+    if(id) return `<iframe src="https://www.youtube-nocookie.com/embed/${id}" title="video" allow="encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+    return `<video src="${esc(m.url)}" controls playsinline preload="metadata"></video>`;
+  }
+  return `<img src="${esc(img(m.url))}" alt="">`;
+}
+function mediaOf(p){
+  const m=(p.media||[]).filter(x=>x&&x.url);
+  if(!m.some(x=>x.type==='image')&&p.image) m.unshift({type:'image',url:p.image});
+  return m.length?m:[{type:'image',url:p.image}];
+}
+
+/* ============ render: settings-driven parts ============ */
+function mainPhone(){ return S?.phone || (S?.operators?.[0]?.phone) || '+998783337272'; }
+function renderStatic(){
+  if(!S) return;
+  const ann=L(S.announcement); $('#ann').hidden=!ann; $('#ann').textContent=ann;
+  $('#heroTitle').textContent=L(S.hero?.title); $('#heroSub').textContent=L(S.hero?.subtitle);
+  if(S.hero?.image) $('#heroImg').src=img(S.hero.image);
+  ['#callTop','#heroCall','#fab'].forEach(s=>$(s).href=telHref(mainPhone()));
+  const pct=S.cashback?.percent??5, mx=S.cashback?.maxShare??30;
+  $('#fCash').textContent=pct+'%'; $('#cashH').textContent=t('cash_h',pct); $('#cashP').textContent=t('cash_p');
+  $('#c3').textContent=t('c3',pct); $('#c4').textContent=t('c4',mx);
+  $('#about').textContent=L(S.about); $('#ftTel').textContent=prettyTel(mainPhone()); $('#ftTel').href=telHref(mainPhone());
+  const names={instagram:'Instagram',telegram:'Telegram',youtube:'YouTube',facebook:'Facebook',tiktok:'TikTok'};
+  $('#socs').innerHTML=Object.entries(S.social||{}).filter(([,v])=>v).map(([k,v])=>`<a href="${esc(v)}" target="_blank" rel="noopener">${names[k]||esc(k)}</a>`).join('');
+  $('#ftOps').innerHTML=(S.operators||[]).map(o=>`<li><a href="${telHref(o.phone)}">${esc(prettyTel(o.phone))}</a> — ${esc(L(o.label))}</li>`).join('')
+    +(S.telegramOrder?`<li><a href="${esc(S.telegramOrder)}" target="_blank" rel="noopener">Telegram</a></li>`:'');
+  const vids=(S.videos||[]).filter(v=>v.url);
+  $('#videos').hidden=!vids.length; $('#navVideos').hidden=!vids.length;
+  $('#vids').innerHTML=vids.map(v=>`<div><div class="vid">${mediaEl({type:'video',url:v.url})}</div>${L(v.title)?`<div class="vid-t">${esc(L(v.title))}</div>`:''}</div>`).join('');
+  $('#fine').textContent=`© ${new Date().getFullYear()} Zikrilla Marinade`;
+}
+
+/* ============ menu ============ */
+function cats(){
+  const list=(S?.categories||[]).filter(c=>products.some(p=>p.category===c.id));
+  const known=new Set(list.map(c=>c.id));
+  products.forEach(p=>{ if(!known.has(p.category)){known.add(p.category); list.push({id:p.category,name:{uz:p.category,ru:p.category,en:p.category}});} });
+  return list;
+}
+function renderRail(){
+  const r=$('#rail'); r.innerHTML='';
+  [{id:'all',name:null},...cats()].forEach(c=>{
+    const b=document.createElement('button'); b.setAttribute('role','tab'); b.setAttribute('aria-pressed',String(c.id===cat));
+    b.textContent=c.id==='all'?t('all'):L(c.name);
+    b.onclick=()=>{cat=c.id; renderRail(); renderGrid();};
+    r.append(b);
+  });
+}
+function renderGrid(){
+  const g=$('#grid'); g.innerHTML='';
+  const list=products.filter(p=>cat==='all'||p.category===cat);
+  if(!list.length){ g.innerHTML=`<p class="empty">${t('empty_cat')}</p>`; return; }
+  list.forEach(p=>{
+    const hasVid=(p.media||[]).some(m=>m.type==='video');
+    const tag=p.lowStock?`<span class="tag low">${t('low')}</span>`:p.weeklyDeal?`<span class="tag deal">${t('deal')}</span>`:p.spicy?`<span class="tag hot">${t('hot')}</span>`:'';
+    const b=document.createElement('button'); b.className='card';
+    b.innerHTML=`<div class="ph"><img loading="lazy" src="${esc(img(p.image))}" alt="${esc(L(p.name))}" onerror="this.onerror=null;this.src='/app/assets/assets/img/logo.png';this.style.objectFit='contain'">${tag}${hasVid?`<span class="vid-badge">▶ ${t('video')}</span>`:''}</div>
+      <div class="bd"><h3>${esc(L(p.name))}</h3><p class="sub">${esc(L(p.subtitle))}</p>
+      <div class="price">${money(p.price)} <small>/ ${esc(L(p.unit)||t('piece'))}</small></div></div>`;
+    b.onclick=()=>openProduct(p);
+    g.append(b);
+  });
+}
+function orderButtons(){
+  const ops=(S?.operators||[]).filter(o=>o.phone);
+  const list=ops.length?ops:[{phone:mainPhone(),label:{uz:'',ru:'',en:''}}];
+  return list.map(o=>`<a class="btn btn-brand" href="${telHref(o.phone)}">${esc(prettyTel(o.phone))}${L(o.label)?` · ${esc(L(o.label))}`:''}</a>`).join('')
+    +(S?.telegramOrder?`<a class="btn btn-tg" href="${esc(S.telegramOrder)}" target="_blank" rel="noopener">${t('write_tg')}</a>`:'');
+}
+function openProduct(p){
+  const media=mediaOf(p);
+  openModal(`<button class="x" aria-label="✕">✕</button>
+    <div class="pd">
+      <div class="gal"><div class="main" id="gMain">${mediaEl(media[0])}</div>
+        ${media.length>1?`<div class="thumbs" id="gThumbs">${media.map((m,i)=>`<button aria-pressed="${i===0}" data-idx="${i}">${m.type==='image'?`<img src="${esc(img(m.url))}" alt="">`:`<span class="pl">▶</span>`}</button>`).join('')}</div>`:''}
+      </div>
+      <div class="info">
+        <h3>${esc(L(p.name))}</h3>
+        <div class="price" style="margin:0">${money(p.price)} <small>/ ${esc(L(p.unit)||t('piece'))}</small></div>
+        ${L(p.subtitle)?`<p class="ingr">${esc(L(p.subtitle))}</p>`:''}
+        ${L(p.description)?`<p class="desc">${esc(L(p.description))}</p>`:''}
+        ${L(p.ingredients)?`<p class="ingr"><b>${t('ingr')}:</b> ${esc(L(p.ingredients))}</p>`:''}
+        <div class="order-box"><b>${t('order_by_phone')}</b>${orderButtons()}<p>${t('order_note')}</p></div>
+      </div>
+    </div>`, true);
+  const th=$('#gThumbs');
+  if(th) th.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    th.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+    $('#gMain').innerHTML=mediaEl(media[+b.dataset.idx]);
+  });
+}
+
+/* ============ calculator ============ */
+let kP=8,kH=4;
+function renderCalc(){
+  $('#kP').textContent=kP; $('#kH').textContent=kH;
+  const six=Math.ceil(kP*4+kH*1.5), coal=Math.max(1,Math.ceil(six/10)), sous=Math.max(1,Math.ceil(kP/4));
+  $('#calcOut').innerHTML=t('calc_out',six,coal,sous);
+}
+document.querySelectorAll('.knob button').forEach(b=>b.onclick=()=>{
+  if(b.dataset.k==='p') kP=Math.min(60,Math.max(1,kP+ +b.dataset.d)); else kH=Math.min(24,Math.max(1,kH+ +b.dataset.d));
+  renderCalc();
+});
+
+/* ============ branches ============ */
+function isOpen(s){
+  const o=s.hours?.open||'09:00', c=s.hours?.close||'22:00'; if(o===c) return true;
+  const now=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Tashkent'}));
+  const m=now.getHours()*60+now.getMinutes(), mm=x=>{const [h,mi]=x.split(':').map(Number);return h*60+mi};
+  return mm(c)>mm(o)? (m>=mm(o)&&m<mm(c)) : (m>=mm(o)||m<mm(c));
+}
+function renderBranches(){
+  $('#fBr').textContent=stores.length||'—';
+  $('#brGrid').innerHTML=stores.map(s=>{
+    const h24=s.hours&&s.hours.open===s.hours.close, op=isOpen(s);
+    return `<article class="br">${s.photo?`<img loading="lazy" src="${esc(img(s.photo))}" alt="">`:''}<div class="in">
+      <h3>${esc(L(s.name))}</h3><p class="adr">${esc(L(s.address))}</p>
+      <p class="hrs">${h24?t('h24'):`${esc(s.hours.open)} – ${esc(s.hours.close)}`} · <span class="${op?'open':'closed'}">${op?t('open_now'):t('closed_now')}</span></p>
+      <div class="row">
+        <a class="btn btn-brand" href="${telHref(s.phone||mainPhone())}">${esc(prettyTel(s.phone||mainPhone()))}</a>
+        <a class="btn btn-ghost" target="_blank" rel="noopener" href="https://yandex.uz/maps/?rtext=~${s.lat},${s.lng}">${t('yandex')}</a>
+        <a class="btn btn-ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}">${t('google')}</a>
+      </div></div></article>`;
+  }).join('');
+  $('#ftBr').innerHTML=stores.map(s=>`<li>${esc(L(s.name))}${s.phone?` — <a href="${telHref(s.phone)}">${esc(prettyTel(s.phone))}</a>`:''}</li>`).join('');
+}
+
+/* ============ SEO: structured data ============ */
+function seo(){
+  const old=document.getElementById('ld'); if(old) old.remove();
+  const sc=document.createElement('script'); sc.type='application/ld+json'; sc.id='ld';
+  sc.textContent=JSON.stringify({
+    '@context':'https://schema.org','@type':'Organization',name:'Zikrilla Marinade',url:location.origin,
+    logo:location.origin+'/app/assets/assets/img/logo.png',telephone:mainPhone(),
+    sameAs:Object.values(S?.social||{}).filter(Boolean),
+    department:stores.map(s=>({'@type':'FoodEstablishment',name:s.name?.uz||s.name?.ru,telephone:s.phone||mainPhone(),
+      address:{'@type':'PostalAddress',streetAddress:s.address?.uz||s.address?.ru,addressCountry:'UZ'},
+      geo:{'@type':'GeoCoordinates',latitude:s.lat,longitude:s.lng},
+      openingHours:(s.hours&&s.hours.open===s.hours.close)?'Mo-Su 00:00-23:59':`Mo-Su ${s.hours.open}-${s.hours.close}`}))
+  });
+  document.head.append(sc);
+}
+
+/* ============ modal ============ */
+function openModal(html,wide){
+  const p=$('#panel'); p.className='panel'+(wide?' wide':''); p.innerHTML=html;
+  const x=p.querySelector('.x'); if(x) x.onclick=closeModal;
+  $('#modal').classList.add('on'); $('#scrim').classList.add('on');
+}
+function closeModal(){ $('#modal').classList.remove('on'); $('#scrim').classList.remove('on'); $('#panel').innerHTML=''; }
+$('#scrim').onclick=closeModal;
+$('#modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+
+/* ============ cabinet ============ */
+$('#cabBtn').onclick=openCabinet; $('#cashBtn').onclick=openCabinet;
+function openCabinet(){ token?showCard():openLogin(); }
+function openLogin(){
+  openModal(`<button class="x" aria-label="✕">✕</button><h3>${t('ph_title')}</h3><p class="sub">${t('ph_sub')}</p>
+    <div class="form"><div class="fld"><label for="aPhone">${t('phone')}</label><input id="aPhone" inputmode="tel" autocomplete="tel" value="+998 "></div>
+    <div class="err" id="aErr"></div><button class="btn btn-brand" id="aGo">${t('get_code')}</button></div>`);
+  const inp=$('#aPhone'); inp.focus(); inp.onkeydown=e=>{if(e.key==='Enter')$('#aGo').click()};
+  $('#aGo').onclick=async()=>{
+    let d=inp.value.replace(/\D/g,''); if(d.length===9) d='998'+d;
+    if(!/^998\d{9}$/.test(d)){ showErr(t('err_phone')); return; }
+    $('#aGo').disabled=true;
+    try{ const r=await api('POST','/auth/send-code',{phone:d}); openCode(d,r.devCode); }
+    catch(e){ showErr(errText(e)); $('#aGo').disabled=false; }
+  };
+}
+function showErr(m){ const e=$('#aErr'); e.textContent=m; e.classList.add('on'); }
+function openCode(phone,dev){
+  openModal(`<button class="x" aria-label="✕">✕</button><h3>${t('code_title')}</h3><p class="sub">${t('code_sub',phone)}</p>
+    <div class="form">${dev?`<div class="ok">${t('dev_code',dev)}</div>`:''}
+    <div class="fld"><label for="aCode">${t('code')}</label><input id="aCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></div>
+    <div class="err" id="aErr"></div><button class="btn btn-brand" id="aGo">${t('verify')}</button><button class="btn btn-ghost" id="aBack">${t('back')}</button></div>`);
+  const inp=$('#aCode'); inp.focus(); inp.onkeydown=e=>{if(e.key==='Enter')$('#aGo').click()};
+  $('#aBack').onclick=openLogin;
+  $('#aGo').onclick=async()=>{
+    $('#aGo').disabled=true;
+    try{
+      const r=await api('POST','/auth/verify',{phone,code:inp.value.trim()});
+      token=r.token; ls.set('z_token',token);
+      r.registered?showCard():openName();
+    }catch(e){ showErr(errText(e)); $('#aGo').disabled=false; }
+  };
+}
+function openName(){
+  openModal(`<button class="x" aria-label="✕">✕</button><h3>${t('reg_title')}</h3><p class="sub">${t('reg_sub')}</p>
+    <div class="form"><div class="fld"><label for="rF">${t('fname')}</label><input id="rF" autocomplete="given-name"></div>
+    <div class="fld"><label for="rL">${t('lname')}</label><input id="rL" autocomplete="family-name"></div>
+    <div class="err" id="aErr"></div><button class="btn btn-brand" id="aGo">${t('save')}</button></div>`);
+  $('#rF').focus();
+  $('#aGo').onclick=async()=>{
+    $('#aGo').disabled=true;
+    try{ await api('POST','/auth/register',{firstName:$('#rF').value.trim(),lastName:$('#rL').value.trim(),birthDate:'2000-01-01',gender:null,address:{text:''},email:null,language:lang}); showCard(); }
+    catch(e){ showErr(errText(e)); $('#aGo').disabled=false; }
+  };
+}
+async function showCard(){
+  let me,lo;
+  try{ [me,lo]=await Promise.all([api('GET','/me'),api('GET','/me/loyalty')]); }
+  catch(e){ if(!token){ openLogin(); return; } openModal(`<button class="x">✕</button><p class="err on">${errText(e)}</p>`); return; }
+  const u=me.user, b=lo.loyalty, tier=(b.tier||'bronze').replace(/^./,c=>c.toUpperCase());
+  openModal(`<button class="x" aria-label="✕">✕</button><h3>${t('my_h')}</h3><p class="sub">${esc((u.firstName+' '+u.lastName).trim())} · ${esc(prettyTel(u.phone))}</p>
+    <div class="form">
+      <div class="lcard"><div class="tr"><span>${t('balance')}</span><span>${t('tier')}: <b>${tier}</b></span></div><div class="bal">${fmt(b.balance)} <span style="font-size:16px">${t('points')}</span></div></div>
+      <div class="qr"><div id="qrBox"></div><b>${esc(prettyTel(u.phone))}</b><span>${t('qr_note')}</span></div>
+      <b>${t('history')}</b>
+      <div class="hist">${lo.history.length?lo.history.map(h=>`<div><span>${t('r_'+h.reason)}${h.amount?` · ${money(h.amount)}`:''}<br><small style="color:var(--mut)">${new Date(h.createdAt).toLocaleDateString()}</small></span><span class="${h.delta>=0?'plus':'minus'}">${h.delta>=0?'+':''}${fmt(h.delta)}</span></div>`).join(''):`<span style="color:var(--mut)">${t('no_hist')}</span>`}</div>
+      <button class="btn btn-ghost" id="outBtn">${t('logout')}</button>
+    </div>`);
+  try{ if(window.QRCode) new QRCode($('#qrBox'),{text:u.phone,width:168,height:168,correctLevel:QRCode.CorrectLevel.M}); }catch(_){}
+  $('#outBtn').onclick=()=>{ token=null; ls.set('z_token',null); closeModal(); };
+}
+
+/* ============ language ============ */
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll('[data-i]').forEach(n=>n.textContent=t(n.dataset.i));
+  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));
+  renderStatic(); renderRail(); renderGrid(); renderBranches(); renderCalc();
+}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{ lang=b.dataset.lang; ls.set('z_lang',lang); applyLang(); });
+
+/* ============ boot ============ */
+(async()=>{
+  applyLang();
+  try{
+    const [se,pr,st]=await Promise.all([api('GET','/settings'),api('GET','/products'),api('GET','/stores')]);
+    S=se.settings; products=pr.products; stores=st.stores;
+  }catch(_){}
+  applyLang(); seo();
+})();
+</script>
+</body>
+</html>

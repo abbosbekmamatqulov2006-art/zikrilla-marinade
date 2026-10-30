@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zikrilla — boshqaruv paneli</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/app/assets/assets/img/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&display=swap" rel="stylesheet">
+<style>
+:root{--brand:#D50C05;--brand-d:#A81F1B;--ink:#201D1B;--char:#231F1D;--smoke:#F4F3F1;--line:#E6E4E0;--mut:#6E6E6E;
+--leaf:#1F8A4C;--leaf-s:#E3F2E8;--amber:#C07A0B;--amber-s:#F8ECD9;--red-s:#FBEAE9;--blue:#1C64B8;--blue-s:#E7F0FA}
+*{box-sizing:border-box;margin:0}
+body{font-family:"Archivo",system-ui,sans-serif;background:var(--smoke);color:var(--ink);line-height:1.45;font-size:15px}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:4px}
+[hidden]{display:none!important}
+.bar{background:var(--char);color:#fff;position:sticky;top:0;z-index:20}
+.bar .in{max-width:1280px;margin:auto;display:flex;align-items:center;gap:14px;padding:0 18px;height:60px}
+.bar b{font-weight:860;font-variation-settings:"wdth" 116;white-space:nowrap}
+.tabs{display:flex;gap:2px;overflow-x:auto}
+.tabs button{padding:8px 13px;border-radius:999px;color:#B8B0AA;font-weight:700;white-space:nowrap}
+.tabs button[aria-pressed="true"]{background:#fff;color:var(--ink)}
+.bar .sp{flex:1}
+.wrap{max-width:1280px;margin:auto;padding:20px 18px 60px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 16px;border-radius:999px;font-weight:800;background:var(--ink);color:#fff;white-space:nowrap}
+.btn:hover{background:#000}
+.btn.red{background:var(--brand)} .btn.red:hover{background:var(--brand-d)}
+.btn.green{background:var(--leaf)} .btn.green:hover{background:#176b3a}
+.btn.gh{background:#fff;border:1.5px solid var(--line);color:var(--ink)} .btn.gh:hover{border-color:var(--ink)}
+.btn.sm{padding:6px 12px;font-size:13.5px}
+.btn[disabled]{opacity:.5;cursor:default}
+h2{font-weight:860;font-variation-settings:"wdth" 114;font-size:24px}
+h3{font-weight:800;font-size:17px;margin-bottom:10px}
+.head{display:flex;align-items:center;justify-content:space-between;margin:4px 0 16px;gap:12px;flex-wrap:wrap}
+.mut{color:var(--mut);font-size:13px}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+.r{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.f{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;min-width:0}
+.f label{font-size:12.5px;font-weight:700;color:var(--mut)}
+.f input,.f select,.f textarea{border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff;width:100%}
+.f textarea{min-height:76px;resize:vertical}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--ink);outline:none}
+.c2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.c3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.chk{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.chk label{display:flex;gap:6px;align-items:center;font-size:14px;font-weight:600}
+.err{background:var(--red-s);color:var(--brand-d);border-radius:10px;padding:9px 12px;font-size:13.5px;margin-bottom:10px}
+.okm{background:var(--leaf-s);color:var(--leaf);border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:700;margin-bottom:10px}
+.pill{font-size:12px;font-weight:800;padding:3px 9px;border-radius:999px;display:inline-block}
+.on{background:var(--leaf-s);color:var(--leaf)} .off{background:var(--smoke);color:var(--mut)}
+.amb{background:var(--amber-s);color:var(--amber)}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);font-size:14px;vertical-align:middle}
+th{background:var(--smoke);font-size:12.5px;color:var(--mut)}
+tr:last-child td{border-bottom:0}
+td img.th{width:48px;height:48px;object-fit:cover;border-radius:8px;display:block;background:var(--smoke)}
+.pin{width:110px;border:1.5px solid var(--line);border-radius:8px;padding:6px 8px;font-weight:700}
+.pin.dirty{border-color:var(--amber);background:var(--amber-s)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;font-weight:700;z-index:90;display:none}
+.toast.show{display:block}
+.toast.bad{background:var(--brand-d)}
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(22,18,16,.5);z-index:40;display:none}
+.scrim.show{display:block}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(620px,100%);background:#fff;z-index:50;transform:translateX(104%);transition:transform .2s;overflow:auto;padding:22px}
+.drawer.show{transform:none}
+.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
+.langtabs{display:flex;gap:4px;margin-bottom:8px}
+.langtabs span{font-size:12px;font-weight:800;color:var(--mut)}
+/* media gallery editor */
+.media{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.mi{width:118px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--smoke);position:relative}
+.mi .pv{width:118px;height:88px;object-fit:cover;display:block;background:#000}
+.mi .vtag{position:absolute;top:6px;left:6px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;font-weight:800;padding:2px 7px;border-radius:999px}
+.mi .cv{position:absolute;top:6px;right:6px;background:var(--leaf);color:#fff;font-size:11px;font-weight:800;padding:2px 7px;border-radius:999px}
+.mi .ct{display:flex;justify-content:space-between;padding:4px}
+.mi .ct button{width:30px;height:28px;border-radius:8px;font-weight:800}
+.mi .ct button:hover{background:#fff}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:14px;text-align:center;color:var(--mut);font-size:13.5px}
+.drop.over{border-color:var(--brand);background:var(--red-s)}
+/* kassa */
+.kassa{display:grid;grid-template-columns:1fr 1.1fr;gap:16px;align-items:start}
+.bigin{font-size:24px!important;font-weight:800;letter-spacing:.02em;padding:12px 14px!important}
+.cust{background:var(--leaf);color:#fff;border-radius:14px;padding:16px}
+.cust .bal{font-size:34px;font-weight:860;font-variation-settings:"wdth" 114}
+.cust .mutw{color:#DFF0E6;font-size:13.5px}
+.calcline{font-size:14px;color:var(--mut);margin:-4px 0 10px}
+.calcline b{color:var(--ink)}
+.hist{display:flex;flex-direction:column}
+.hist .h{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.plus{color:var(--leaf);font-weight:800} .minus{color:var(--brand-d);font-weight:800}
+/* orders */
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+.card.new{animation:fl 1.1s ease 4}
+@keyframes fl{0%,100%{box-shadow:0 0 0 0 rgba(213,12,5,0)}50%{box-shadow:0 0 0 4px rgba(213,12,5,.45)}}
+.st{font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px}
+.st-accepted{background:var(--red-s);color:var(--brand)} .st-preparing{background:var(--amber-s);color:var(--amber)}
+.st-ready{background:var(--blue-s);color:var(--blue)} .st-done{background:var(--leaf-s);color:var(--leaf)} .st-cancelled{background:var(--smoke);color:var(--mut)}
+.items{margin:10px 0;font-size:14px}
+.items div{display:flex;justify-content:space-between;padding:2px 0}
+.tot{border-top:1px dashed var(--line);padding-top:8px;font-weight:800;display:flex;justify-content:space-between}
+/* list editors */
+.li{display:grid;gap:8px;align-items:end;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px;background:#FCFBFA}
+.login{max-width:380px;margin:12vh auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px}
+.login h1{font-weight:860;font-variation-settings:"wdth" 114;font-size:22px;margin-bottom:4px}
+.login p{color:var(--mut);font-size:14px;margin-bottom:16px}
+.sec{display:none}.sec.show{display:block}
+@media(max-width:860px){.kassa{grid-template-columns:1fr}.c3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.c2,.c3{grid-template-columns:1fr}.hide-sm{display:none}}
+</style>
+</head>
+<body>
+
+<div id="loginView" class="login" hidden>
+  <h1>Boshqaruv paneli</h1>
+  <p>Admin kalitni kiriting (serverdagi .env — ADMIN_KEY)</p>
+  <div class="err" id="lErr" hidden></div>
+  <div class="f"><label for="lKey">Admin kalit</label><input id="lKey" type="password" autocomplete="current-password"></div>
+  <button class="btn red" style="width:100%" id="lGo">Kirish</button>
+</div>
+
+<div id="appView" hidden>
+  <div class="bar"><div class="in">
+    <b>ZIKRILLA · panel</b>
+    <div class="tabs" id="tabs">
+      <button data-tab="kassa" aria-pressed="true">Kassa</button>
+      <button data-tab="orders" aria-pressed="false">Buyurtmalar</button>
+      <button data-tab="products" aria-pressed="false">Mahsulotlar</button>
+      <button data-tab="stores" aria-pressed="false">Filiallar</button>
+      <button data-tab="settings" aria-pressed="false">Sozlamalar</button>
+      <button data-tab="users" aria-pressed="false">Mijozlar</button>
+    </div>
+    <span class="sp"></span>
+    <a class="btn sm gh hide-sm" href="/" target="_blank" rel="noopener">Saytni ochish</a>
+    <button class="btn sm gh" id="outBtn">Chiqish</button>
+  </div></div>
+
+  <div class="wrap">
+
+    <!-- ================= KASSA ================= -->
+    <section class="sec show" id="sec-kassa">
+      <div class="head"><h2>Kassa — keshbek</h2>
+        <div class="row"><span class="mut">Filial:</span><select id="kStore" style="padding:7px 10px;border:1.5px solid var(--line);border-radius:10px"></select></div>
+      </div>
+      <div class="kassa">
+        <div class="box">
+          <div class="f"><label for="kPhone">Mijoz telefoni (yoki QR skaner)</label>
+            <input id="kPhone" class="bigin" inputmode="tel" placeholder="90 123 45 67" autocomplete="off"></div>
+          <button class="btn" id="kFind" style="width:100%">Topish</button>
+          <p class="mut" style="margin-top:10px">QR skaner bo'lsa — maydonni bosib, mijoz QR kodini skanerlang: raqam o'zi yoziladi.</p>
+          <div id="kNew" hidden>
+            <hr class="sep">
+            <div class="okm" style="background:var(--amber-s);color:var(--amber)">Bu raqamda mijoz yo'q — birinchi xariddayoq ochiladi.</div>
+            <div class="f"><label for="kName">Mijoz ismi (ixtiyoriy)</label><input id="kName"></div>
+          </div>
+        </div>
+        <div id="kRight">
+          <div class="box mut" id="kHint">Mijoz raqamini kiriting.</div>
+          <div id="kCard" hidden>
+            <div class="cust"><div class="r"><b id="kcName"></b><span class="mutw" id="kcTier"></span></div>
+              <div class="bal" id="kcBal"></div><div class="mutw" id="kcPhone"></div></div>
+            <div class="c2" style="margin-top:14px">
+              <div class="box">
+                <h3>Ball qo'shish</h3>
+                <div class="f"><label for="kAmt">Xarid summasi (so'm)</label><input id="kAmt" type="number" min="0" step="1000" inputmode="numeric"></div>
+                <p class="calcline" id="kEarnCalc"></p>
+                <button class="btn green" style="width:100%" id="kEarn">Ball qo'shish</button>
+              </div>
+              <div class="box">
+                <h3>Ball ishlatish</h3>
+                <div class="f"><label for="kSpAmt">Xarid summasi (so'm)</label><input id="kSpAmt" type="number" min="0" step="1000" inputmode="numeric"></div>
+                <div class="f"><label for="kPts">Ishlatiladigan ball</label><input id="kPts" type="number" min="0" step="1000" inputmode="numeric"></div>
+                <p class="calcline" id="kSpCalc"></p>
+                <button class="btn red" style="width:100%" id="kSpend">Ballni yechish</button>
+              </div>
+            </div>
+            <div class="box" style="margin-top:14px"><h3>Oxirgi harakatlar</h3><div class="hist" id="kHist"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BUYURTMALAR ================= -->
+    <section class="sec" id="sec-orders">
+      <div class="head"><h2>Buyurtmalar (mobil ilovadan)</h2>
+        <div class="row"><span class="pill off" id="stCnt">Bugun 0</span><span class="pill off" id="stAct">Faol 0</span>
+        <button class="btn sm gh" id="soundBtn">🔔 ovoz: yoqiq</button></div></div>
+      <div class="grid" id="oGrid"></div>
+      <h3 style="margin:24px 0 10px;color:var(--mut)">Yakunlangan / bekor qilingan</h3>
+      <div class="grid" id="oDone"></div>
+    </section>
+
+    <!-- ================= MAHSULOTLAR ================= -->
+    <section class="sec" id="sec-products">
+      <div class="head"><h2>Mahsulotlar</h2>
+        <div class="row"><input id="pSearch" placeholder="Qidirish…" style="border:1.5px solid var(--line);border-radius:999px;padding:8px 14px">
+        <button class="btn red" id="pNew">+ Yangi mahsulot</button></div></div>
+      <p class="mut" style="margin-bottom:10px">Narxni jadvalning o'zida o'zgartirib, Enter bosing yoki ✓ ni bosing. Rasm, video va tavsif — "Tahrirlash"da.</p>
+      <table><thead><tr><th></th><th>Nomi</th><th class="hide-sm">Kategoriya</th><th>Narx (so'm)</th><th class="hide-sm">Holat</th><th></th></tr></thead><tbody id="pBody"></tbody></table>
+    </section>
+
+    <!-- ================= FILIALLAR ================= -->
+    <section class="sec" id="sec-stores">
+      <div class="head"><h2>Filiallar</h2><button class="btn red" id="sNew">+ Yangi filial</button></div>
+      <table><thead><tr><th>Nomi</th><th class="hide-sm">Manzil</th><th>Telefon</th><th class="hide-sm">Ish vaqti</th><th>Holat</th><th></th></tr></thead><tbody id="sBody"></tbody></table>
+    </section>
+
+    <!-- ================= SOZLAMALAR ================= -->
+    <section class="sec" id="sec-settings">
+      <div class="head"><h2>Sozlamalar</h2><button class="btn red" id="setSave">Hammasini saqlash</button></div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(420px,1fr))" id="setForm"></div>
+    </section>
+
+    <!-- ================= MIJOZLAR ================= -->
+    <section class="sec" id="sec-users">
+      <div class="head"><h2>Mijozlar</h2><div class="row"><input id="uSearch" placeholder="Ism yoki telefon…" style="border:1.5px solid var(--line);border-radius:999px;padding:8px 14px"><span class="pill off" id="uCnt">0</span></div></div>
+      <table><thead><tr><th>Ism</th><th>Telefon</th><th>Balans</th><th class="hide-sm">Jami yig'gan</th><th class="hide-sm">Holat</th><th class="hide-sm">Sana</th><th></th></tr></thead><tbody id="uBody"></tbody></table>
+    </section>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="drawer" id="drawer"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>new Intl.NumberFormat('ru-RU').format(n||0);
+const money=n=>fmt(n)+" so'm";
+const img=p=>!p?'/app/assets/assets/img/logo.png':(p.startsWith('/')||p.startsWith('http')?p:'/app/assets/'+p);
+const ls={get:k=>{try{return localStorage.getItem(k)}catch(_){return null}},set:(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(_){}}};
+const pretty=p=>{const d=String(p||'').replace(/\D/g,'');return d.length===12?`+${d.slice(0,3)} ${d.slice(3,5)} ${d.slice(5,8)} ${d.slice(8,10)} ${d.slice(10)}`:p};
+let KEY=ls.get('z_admin_key')||'', S=null, stores=[], products=[];
+
+function toast(m,bad){const t=$('#toast');t.textContent=m;t.className='toast show'+(bad?' bad':'');clearTimeout(t._t);t._t=setTimeout(()=>t.className='toast',2600)}
+async function api(method,path,body,isForm){
+  const h={'X-Admin-Key':KEY}; if(!isForm) h['Content-Type']='application/json';
+  let r; try{ r=await fetch(path,{method,headers:h,body:isForm?body:(body!==undefined?JSON.stringify(body):undefined)}); }
+  catch(_){ throw {message:"Server bilan aloqa yo'q"}; }
+  let j={}; try{ j=await r.json(); }catch(_){}
+  if(r.ok) return j;
+  if(r.status===403) throw {forbidden:true,message:"Admin kalit noto'g'ri"};
+  throw {message:j.message||j.error||('Xatolik '+r.status)};
+}
+
+/* ---------- login ---------- */
+function show(v){ $('#loginView').hidden=v!=='login'; $('#appView').hidden=v!=='app'; }
+async function boot(){
+  if(!KEY){ show('login'); $('#lKey').focus(); return; }
+  try{ await api('GET','/admin/settings'); show('app'); start(); }
+  catch(e){ if(e.forbidden){KEY='';ls.set('z_admin_key',null);} show('login'); if(e.message){$('#lErr').textContent=e.message;$('#lErr').hidden=false;} }
+}
+$('#lGo').onclick=async()=>{
+  KEY=$('#lKey').value.trim(); $('#lErr').hidden=true;
+  try{ await api('GET','/admin/settings'); ls.set('z_admin_key',KEY); show('app'); start(); }
+  catch(e){ $('#lErr').textContent=e.message; $('#lErr').hidden=false; }
+};
+$('#lKey').onkeydown=e=>{ if(e.key==='Enter') $('#lGo').click(); };
+$('#outBtn').onclick=()=>{ ls.set('z_admin_key',null); location.reload(); };
+
+/* ---------- tabs ---------- */
+$('#tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  $('#tabs').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('show'));
+  $('#sec-'+b.dataset.tab).classList.add('show');
+  ls.set('z_tab',b.dataset.tab);
+  if(b.dataset.tab==='users') loadUsers();
+  if(b.dataset.tab==='kassa') $('#kPhone').focus();
+});
+
+/* ---------- drawer ---------- */
+function openDrawer(html){ $('#drawer').innerHTML=html; $('#drawer').classList.add('show'); $('#scrim').classList.add('show'); $('#drawer').scrollTop=0; }
+function closeDrawer(){ $('#drawer').classList.remove('show'); $('#scrim').classList.remove('show'); }
+$('#scrim').onclick=closeDrawer;
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
+
+/* ---------- upload helper ---------- */
+async function uploadFiles(files,onDone){
+  for(const f of files){
+    const fd=new FormData(); fd.append('file',f);
+    try{ const r=await api('POST','/admin/upload',fd,true); onDone(r); }
+    catch(e){ toast(f.name+': '+e.message,true); }
+  }
+}
+function wireDrop(el,input,onDone){
+  el.onclick=()=>input.click();
+  input.onchange=async()=>{ el.textContent='Yuklanmoqda…'; await uploadFiles([...input.files],onDone); input.value=''; el.textContent=el.dataset.label; };
+  el.ondragover=e=>{e.preventDefault();el.classList.add('over')};
+  el.ondragleave=()=>el.classList.remove('over');
+  el.ondrop=async e=>{e.preventDefault();el.classList.remove('over');el.textContent='Yuklanmoqda…';await uploadFiles([...e.dataTransfer.files],onDone);el.textContent=el.dataset.label;};
+}
+const L3=(id,label,v,area)=>`<div class="f"><label>${label}</label><div class="c3">
+  ${['uz','ru','en'].map(l=>area?`<textarea id="${id}_${l}" placeholder="${l.toUpperCase()}">${esc(v?.[l]||'')}</textarea>`:`<input id="${id}_${l}" placeholder="${l.toUpperCase()}" value="${esc(v?.[l]||'')}">`).join('')}</div></div>`;
+const read3=id=>({uz:$('#'+id+'_uz').value.trim(),ru:$('#'+id+'_ru').value.trim(),en:$('#'+id+'_en').value.trim()});
+
+/* ================= KASSA ================= */
+let kCust=null, kPhoneVal='', kPct=5, kMax=.3;
+function storeOptions(sel){ return stores.filter(s=>s.active!==false).map(s=>`<option value="${s.id}" ${s.id===sel?'selected':''}>${esc(s.name.uz||s.name.ru)}</option>`).join(''); }
+function fillKStore(){ $('#kStore').innerHTML=storeOptions(ls.get('z_kstore')); }
+$('#kStore').onchange=e=>ls.set('z_kstore',e.target.value);
+$('#kPhone').onkeydown=e=>{ if(e.key==='Enter') $('#kFind').click(); };
+$('#kFind').onclick=kLookup;
+async function kLookup(){
+  const raw=$('#kPhone').value; if(!raw.replace(/\D/g,'')) return;
+  try{
+    const r=await api('GET','/admin/kassa/lookup?phone='+encodeURIComponent(raw));
+    kPhoneVal=r.phone; kPct=r.percent; kMax=r.maxShare; kCust=r.customer;
+    $('#kPhone').value=pretty(r.phone); renderK();
+  }catch(e){ toast(e.message,true); }
+}
+function renderK(){
+  $('#kHint').hidden=true; $('#kCard').hidden=false; $('#kNew').hidden=!!kCust;
+  const c=kCust||{name:'Yangi mijoz',balance:0,tier:'bronze',history:[],phone:kPhoneVal};
+  $('#kcName').textContent=c.name||'Ismi kiritilmagan';
+  $('#kcTier').textContent=(c.tier||'bronze').toUpperCase();
+  $('#kcBal').textContent=fmt(c.balance)+' ball';
+  $('#kcPhone').textContent=pretty(c.phone||kPhoneVal)+(c.registered===false?' · saytda kirmagan':'');
+  $('#kSpend').disabled=!kCust||!c.balance;
+  calcK();
+  $('#kHist').innerHTML=c.history.length?c.history.map(h=>{
+    const can=(h.reason==='kassa_earn'||h.reason==='kassa_spend');
+    const nm={kassa_earn:'Xarid',kassa_spend:'Ishlatildi',kassa_undo:'Bekor qilingan',order_earn:'Ilova buyurtmasi',order_spend:'Ilovada ishlatildi',order_refund:'Qaytarildi'}[h.reason]||h.reason;
+    return `<div class="h"><span>${nm}${h.amount?' · '+money(h.amount):''}<br><span class="mut">${new Date(h.createdAt).toLocaleString()}</span></span>
+      <span class="row"><b class="${h.delta>=0?'plus':'minus'}">${h.delta>=0?'+':''}${fmt(h.delta)}</b>${can?`<button class="btn sm gh" data-undo="${h.id}">Bekor</button>`:''}</span></div>`;
+  }).join(''):'<span class="mut">Hali harakat yo\'q</span>';
+  $('#kHist').querySelectorAll('[data-undo]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('Shu amal bekor qilinsinmi?')) return;
+    try{ const r=await api('POST','/admin/kassa/undo/'+b.dataset.undo); kCust=r.customer; renderK(); toast('Bekor qilindi'); }catch(e){ toast(e.message,true); }
+  });
+}
+function calcK(){
+  const a=+$('#kAmt').value||0; $('#kEarnCalc').innerHTML=a?`Qo'shiladi: <b>${fmt(Math.round(a*kPct/100))} ball</b> (${kPct}%)`:`Har xariddan ${kPct}%`;
+  const sa=+$('#kSpAmt').value||0, bal=kCust?.balance||0, cap=sa?Math.min(bal,Math.floor(sa*kMax)):bal;
+  $('#kSpCalc').innerHTML=`Ko'pi bilan: <b>${fmt(cap)} ball</b>`+(sa?` · to'lanadi: <b>${money(Math.max(0,sa-(+$('#kPts').value||0)))}</b>`:'');
+}
+['#kAmt','#kSpAmt','#kPts'].forEach(s=>$(s).oninput=calcK);
+$('#kAmt').onkeydown=e=>{ if(e.key==='Enter') $('#kEarn').click(); };
+$('#kEarn').onclick=async()=>{
+  const amount=+$('#kAmt').value; if(!amount){ toast('Xarid summasini kiriting',true); return; }
+  $('#kEarn').disabled=true;
+  try{
+    const r=await api('POST','/admin/kassa/earn',{phone:kPhoneVal,amount,storeId:$('#kStore').value||null,name:$('#kName').value.trim()||null});
+    kCust=r.customer; $('#kAmt').value=''; $('#kName').value=''; renderK(); toast(`+${fmt(r.added)} ball qo'shildi`);
+  }catch(e){ toast(e.message,true); }
+  $('#kEarn').disabled=false;
+};
+$('#kSpend').onclick=async()=>{
+  const points=+$('#kPts').value, amount=+$('#kSpAmt').value||null;
+  if(!points){ toast('Ball miqdorini kiriting',true); return; }
+  if(!confirm(`${fmt(points)} ball yechilsinmi?`)) return;
+  $('#kSpend').disabled=true;
+  try{
+    const r=await api('POST','/admin/kassa/spend',{phone:kPhoneVal,points,amount,storeId:$('#kStore').value||null});
+    kCust=r.customer; $('#kPts').value=''; $('#kSpAmt').value=''; renderK(); toast(`${fmt(r.spent)} ball yechildi`);
+  }catch(e){ toast(e.message,true); }
+  $('#kSpend').disabled=false;
+};
+
+/* ================= ORDERS ================= */
+let known=null, soundOn=true;
+$('#soundBtn').onclick=()=>{ soundOn=!soundOn; $('#soundBtn').textContent=soundOn?'🔔 ovoz: yoqiq':"🔕 ovoz: o'chiq"; };
+function beep(){ if(!soundOn) return; try{ const a=new (window.AudioContext||window.webkitAudioContext)();
+  [[880,0],[660,.18],[880,.36]].forEach(([f,t])=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=f;o.connect(g);g.connect(a.destination);
+  g.gain.setValueAtTime(.25,a.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t+.16);o.start(a.currentTime+t);o.stop(a.currentTime+t+.17)}); }catch(_){} }
+const STL={accepted:'qabul qilindi',preparing:'tayyorlanmoqda',ready:'tayyor',done:'yakunlandi',cancelled:'bekor'};
+async function loadOrders(){
+  let r; try{ r=await api('GET','/admin/orders'); }catch(_){ return; }
+  const ids=new Set(r.orders.map(o=>o.id)); const fresh=new Set();
+  if(known){ r.orders.forEach(o=>{ if(!known.has(o.id)) fresh.add(o.id); }); if(fresh.size) beep(); }
+  known=ids;
+  const act=r.orders.filter(o=>['accepted','preparing','ready'].includes(o.status));
+  const done=r.orders.filter(o=>['done','cancelled'].includes(o.status)).slice(0,12);
+  const today=new Date().toDateString();
+  $('#stCnt').textContent='Bugun '+r.orders.filter(o=>new Date(o.createdAt).toDateString()===today&&o.status!=='cancelled').length;
+  $('#stAct').textContent='Faol '+act.length;
+  const tab=$('#tabs').querySelector('[data-tab="orders"]'); tab.textContent=act.length?`Buyurtmalar (${act.length})`:'Buyurtmalar';
+  drawOrders($('#oGrid'),act,fresh,true); drawOrders($('#oDone'),done,fresh,false);
+}
+function drawOrders(box,list,fresh,actions){
+  box.innerHTML=list.length?'':'<span class="mut">Hozircha yo\'q</span>';
+  list.forEach(o=>{
+    const st=stores.find(s=>s.id===o.storeId);
+    const where=o.type==='delivery'?'Yetkazish: '+(o.address||''):'Olib ketish: '+(st?(st.name.uz||st.name.ru):o.storeId);
+    const c=document.createElement('div'); c.className='card'+(fresh.has(o.id)?' new':'');
+    c.innerHTML=`<div class="r"><b>№${o.number}</b><span class="st st-${o.status}">${STL[o.status]||o.status}</span></div>
+      <div class="mut">${new Date(o.createdAt).toLocaleString()}</div>
+      <div style="margin-top:6px"><b>${esc(o.customer.name||'—')}</b> · <a href="tel:+${o.customer.phone}">${pretty(o.customer.phone)}</a></div>
+      <div class="mut">${esc(where)}</div>
+      <div class="items">${o.items.map(i=>{const p=products.find(x=>x.id===i.productId);return `<div><span>${esc(p?(p.name.uz||p.name.ru):i.productId)} × ${i.qty}</span><span>${p?money(p.price*i.qty):''}</span></div>`}).join('')}</div>
+      <div class="tot"><span>Jami${o.pointsUsed?` (ball −${fmt(o.pointsUsed)})`:''}</span><span>${money(o.total)}</span></div>`;
+    if(actions){
+      const a=document.createElement('div'); a.className='row'; a.style.marginTop='12px';
+      const nx={accepted:['preparing','Tayyorlashga olish'],preparing:['ready','Tayyor'],ready:['done','Yakunlash']}[o.status];
+      if(nx){ const b=document.createElement('button'); b.className='btn sm red'; b.textContent=nx[1];
+        b.onclick=async()=>{b.disabled=true;try{await api('POST',`/admin/orders/${o.id}/status?status=${nx[0]}`)}catch(e){toast(e.message,true)}loadOrders()}; a.append(b); }
+      const x=document.createElement('button'); x.className='btn sm gh'; x.textContent='Bekor qilish';
+      x.onclick=async()=>{ if(!confirm(`№${o.number} bekor qilinsinmi?`))return; try{await api('POST',`/admin/orders/${o.id}/status?status=cancelled`)}catch(e){toast(e.message,true)} loadOrders(); };
+      a.append(x); c.append(a);
+    }
+    box.append(c);
+  });
+}
+
+/* ================= PRODUCTS ================= */
+const catName=id=>{const c=(S?.categories||[]).find(c=>c.id===id);return c?(c.name.uz||c.name.ru):id};
+async function loadProducts(){ const r=await api('GET','/admin/products'); products=r.products; drawProducts(); }
+$('#pSearch').oninput=drawProducts;
+function drawProducts(){
+  const q=$('#pSearch').value.toLowerCase().trim();
+  const list=products.filter(p=>!q||[p.name.uz,p.name.ru,p.name.en].join(' ').toLowerCase().includes(q));
+  $('#pBody').innerHTML=list.map(p=>{
+    const nv=(p.media||[]).filter(m=>m.type==='video').length, ni=(p.media||[]).filter(m=>m.type==='image').length;
+    return `<tr><td><img class="th" src="${esc(img(p.image))}" alt="" onerror="this.onerror=null;this.src='/app/assets/assets/img/logo.png';this.style.objectFit='contain'"></td>
+    <td><b>${esc(p.name.uz||p.name.ru)}</b><div class="mut">${esc(p.subtitle?.uz||'')}${(ni||nv)?` · ${ni} rasm${nv?`, ${nv} video`:''}`:''}</div></td>
+    <td class="hide-sm">${esc(catName(p.category))}</td>
+    <td><div class="row"><input class="pin" type="number" min="0" step="500" value="${p.price}" data-pid="${p.id}"><button class="btn sm gh" data-ps="${p.id}" title="Saqlash">✓</button></div></td>
+    <td class="hide-sm"><span class="pill ${p.active?'on':'off'}">${p.active?'sotuvda':'yashirin'}</span>${p.lowStock?' <span class="pill amb">kam</span>':''}</td>
+    <td><button class="btn sm gh" data-pe="${p.id}">Tahrirlash</button></td></tr>`;
+  }).join('')||'<tr><td colspan="6" class="mut">Topilmadi</td></tr>';
+  $('#pBody').querySelectorAll('.pin').forEach(i=>{
+    i.oninput=()=>i.classList.add('dirty');
+    i.onkeydown=e=>{ if(e.key==='Enter') savePrice(i.dataset.pid,i); };
+  });
+  $('#pBody').querySelectorAll('[data-ps]').forEach(b=>b.onclick=()=>savePrice(b.dataset.ps,$(`.pin[data-pid="${b.dataset.ps}"]`)));
+  $('#pBody').querySelectorAll('[data-pe]').forEach(b=>b.onclick=()=>editProduct(products.find(p=>p.id===b.dataset.pe)));
+}
+async function savePrice(id,inp){
+  const v=Math.round(+inp.value); if(!(v>=0)){ toast("Narx noto'g'ri",true); return; }
+  try{ await api('POST',`/admin/products/${id}/price?price=${v}`); inp.classList.remove('dirty'); const p=products.find(x=>x.id===id); if(p) p.price=v; toast('Narx saqlandi: '+money(v)); }
+  catch(e){ toast(e.message,true); }
+}
+$('#pNew').onclick=()=>editProduct(null);
+let pMedia=[];
+function editProduct(p){
+  pMedia=JSON.parse(JSON.stringify(p?.media||[]));
+  if(p&&!pMedia.length&&p.rawImage) pMedia=[{type:'image',url:p.rawImage}];
+  const cats=(S?.categories||[]);
+  openDrawer(`<div class="r" style="margin-bottom:14px"><h2>${p?'Mahsulotni tahrirlash':'Yangi mahsulot'}</h2><button class="btn sm gh" id="dX">✕</button></div>
+    <div id="pErr" class="err" hidden></div>
+    <h3>Rasm va videolar</h3>
+    <div class="media" id="pMedia"></div>
+    <div class="drop" id="pDrop" data-label="Rasm yoki video yuklash — bosing yoki shu yerga tashlang (bir nechtasini birdan ham bo'ladi)">Rasm yoki video yuklash — bosing yoki shu yerga tashlang (bir nechtasini birdan ham bo'ladi)</div>
+    <input type="file" id="pFile" multiple accept=".jpg,.jpeg,.png,.webp,.mp4,.webm,.mov" hidden>
+    <div class="row" style="margin:10px 0 4px"><input id="pYt" placeholder="yoki YouTube havolasi: https://youtu.be/..." style="flex:1;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px"><button class="btn sm gh" id="pYtAdd">Qo'shish</button></div>
+    <p class="mut">Birinchi rasm — muqova (saytda, ilovada va menyuda ko'rinadi). Tartibini ← → bilan o'zgartiring.</p>
+    <hr class="sep">
+    ${L3('fName','Nomi *',p?.name)}
+    ${L3('fSub','Qisqa tavsif (karta ostida)',p?.subtitle)}
+    ${L3('fDesc','Batafsil tavsif (mahsulot oynasida)',p?.description,true)}
+    ${L3('fIngr','Tarkibi',p?.ingredients)}
+    <div class="c3">
+      <div class="f"><label>Narx (so'm) *</label><input id="fPrice" type="number" min="0" step="500" value="${p?.price??''}"></div>
+      <div class="f"><label>Kategoriya</label><select id="fCat">${cats.map(c=>`<option value="${esc(c.id)}" ${c.id===(p?.category||'skewers')?'selected':''}>${esc(c.name.uz||c.name.ru)}</option>`).join('')}</select></div>
+      <div class="f"><label>Tartib raqami</label><input id="fSort" type="number" value="${p?.sort??0}"></div>
+    </div>
+    ${L3('fUnit','Birlik (bo\'sh = dona)',p?.unit)}
+    <div class="chk">
+      <label><input type="checkbox" id="fActive" ${p?(p.active?'checked':''):'checked'}> Sotuvda</label>
+      <label><input type="checkbox" id="fLow" ${p?.lowStock?'checked':''}> Kam qoldi</label>
+      <label><input type="checkbox" id="fSpicy" ${p?.spicy?'checked':''}> Achchiq</label>
+      <label><input type="checkbox" id="fDeal" ${p?.weeklyDeal?'checked':''}> Hafta taklifi</label>
+    </div>
+    <div class="row"><button class="btn red" id="fSave" style="flex:1">Saqlash</button>${p?`<button class="btn gh" id="fDel">O'chirish</button>`:''}</div>
+    <p class="mut" style="margin-top:10px">Saqlagach saytda darhol, mobil ilovada qayta ochilganda ko'rinadi.</p>`);
+  $('#dX').onclick=closeDrawer;
+  drawMedia();
+  wireDrop($('#pDrop'),$('#pFile'),r=>{ pMedia.push({type:r.type,url:r.url}); drawMedia(); });
+  $('#pYtAdd').onclick=()=>{ const u=$('#pYt').value.trim(); if(!/youtu/.test(u)){ toast('YouTube havolasini kiriting',true); return; } pMedia.push({type:'video',url:u}); $('#pYt').value=''; drawMedia(); };
+  $('#fSave').onclick=()=>saveProduct(p);
+  if(p) $('#fDel').onclick=async()=>{
+    if(!confirm(`"${p.name.uz||p.name.ru}" o'chirilsinmi?`)) return;
+    try{ const r=await api('DELETE','/admin/products/'+p.id); toast(r.deleted?"O'chirildi":"Buyurtmalar tarixida bor — yashirildi"); closeDrawer(); loadProducts(); }catch(e){ toast(e.message,true); }
+  };
+}
+function ytThumb(u){const m=String(u).match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);return m?`https://img.youtube.com/vi/${m[1]}/mqdefault.jpg`:null}
+function drawMedia(){
+  const firstImg=pMedia.findIndex(m=>m.type==='image');
+  $('#pMedia').innerHTML=pMedia.map((m,i)=>{
+    const prev=m.type==='image'?`<img class="pv" src="${esc(img(m.url))}" alt="">`:(ytThumb(m.url)?`<img class="pv" src="${ytThumb(m.url)}" alt="">`:`<video class="pv" src="${esc(m.url)}" muted preload="metadata"></video>`);
+    return `<div class="mi">${prev}${m.type==='video'?'<span class="vtag">▶ video</span>':''}${i===firstImg?'<span class="cv">muqova</span>':''}
+      <div class="ct"><button data-l="${i}" title="Chapga">←</button><button data-d="${i}" title="O'chirish">✕</button><button data-r="${i}" title="O'ngga">→</button></div></div>`;
+  }).join('')||'<span class="mut">Hali rasm yo\'q</span>';
+  const mv=(i,j)=>{ if(j<0||j>=pMedia.length) return; [pMedia[i],pMedia[j]]=[pMedia[j],pMedia[i]]; drawMedia(); };
+  $('#pMedia').querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>mv(+b.dataset.l,+b.dataset.l-1));
+  $('#pMedia').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>mv(+b.dataset.r,+b.dataset.r+1));
+  $('#pMedia').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{ pMedia.splice(+b.dataset.d,1); drawMedia(); });
+}
+async function saveProduct(p){
+  const name=read3('fName'), price=+$('#fPrice').value;
+  const err=m=>{ $('#pErr').textContent=m; $('#pErr').hidden=false; $('#drawer').scrollTop=0; };
+  if(!name.uz&&!name.ru) return err('Nomini kiriting (kamida o\'zbekcha)');
+  if($('#fPrice').value===''||price<0) return err('Narxni kiriting');
+  const unit=read3('fUnit');
+  const body={id:p?.id||null,name,subtitle:read3('fSub'),description:read3('fDesc'),ingredients:read3('fIngr'),
+    price:Math.round(price),media:pMedia,image:p?.rawImage||'',category:$('#fCat').value,sort:+$('#fSort').value||0,
+    lowStock:$('#fLow').checked,spicy:$('#fSpicy').checked,weeklyDeal:$('#fDeal').checked,active:$('#fActive').checked,
+    unit:(unit.uz||unit.ru)?unit:null};
+  $('#fSave').disabled=true;
+  try{ await api('POST','/admin/products',body); toast('Saqlandi'); closeDrawer(); loadProducts(); }
+  catch(e){ err(e.message); $('#fSave').disabled=false; }
+}
+
+/* ================= STORES ================= */
+async function loadStores(){ const r=await api('GET','/admin/stores'); stores=r.stores; drawStores(); fillKStore(); }
+function drawStores(){
+  $('#sBody').innerHTML=stores.map(s=>`<tr><td><b>${esc(s.name.uz||s.name.ru)}</b></td><td class="hide-sm mut">${esc(s.address.uz||s.address.ru)}</td>
+    <td>${s.phone?`<a href="tel:${esc(s.phone)}">${esc(pretty(s.phone))}</a>`:'—'}</td>
+    <td class="hide-sm">${s.hours.open===s.hours.close?'24 soat':`${s.hours.open}–${s.hours.close}`}</td>
+    <td><span class="pill ${s.active?'on':'off'}">${s.active?'ochiq':'yashirin'}</span></td>
+    <td><button class="btn sm gh" data-se="${s.id}">Tahrirlash</button></td></tr>`).join('');
+  $('#sBody').querySelectorAll('[data-se]').forEach(b=>b.onclick=()=>editStore(stores.find(s=>s.id===b.dataset.se)));
+}
+$('#sNew').onclick=()=>editStore(null);
+function parseLoc(t){
+  t=String(t||'');
+  let m=t.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/)||t.match(/[?&](?:q|query|destination)=(-?\d+\.\d+)(?:,|%2C)(-?\d+\.\d+)/);
+  if(m) return [+m[1],+m[2]];
+  m=t.match(/[?&](?:ll|pt|whatshere%5Bpoint%5D)=(-?\d+\.\d+)(?:,|%2C)(-?\d+\.\d+)/);       // Yandex: uzunlik,kenglik
+  if(m) return [+m[2],+m[1]];
+  m=t.match(/(-?\d{1,2}\.\d{3,})\s*[, ]\s*(-?\d{1,3}\.\d{3,})/);
+  if(m){ const a=+m[1],b=+m[2]; return a>b?[b,a]:[a,b]; }    // Toshkent: kenglik ~41 < uzunlik ~69
+  return null;
+}
+function editStore(s){
+  const h24=s&&s.hours.open===s.hours.close;
+  openDrawer(`<div class="r" style="margin-bottom:14px"><h2>${s?'Filialni tahrirlash':'Yangi filial'}</h2><button class="btn sm gh" id="dX">✕</button></div>
+    <div id="sErr" class="err" hidden></div>
+    ${L3('sName','Nomi *',s?.name)}
+    ${L3('sAddr','Manzil',s?.address)}
+    <h3>Joylashuv</h3>
+    <div class="f"><label>Google yoki Yandex xaritadan havola yoki koordinatani shu yerga qo'ying</label><input id="sLoc" placeholder="https://maps.google.com/...@41.31,69.24  yoki  41.3112, 69.2401"></div>
+    <div class="c2"><div class="f"><label>Kenglik (lat)</label><input id="sLat" type="number" step="any" value="${s?.lat??''}"></div>
+    <div class="f"><label>Uzunlik (lng)</label><input id="sLng" type="number" step="any" value="${s?.lng??''}"></div></div>
+    <p class="mut" id="sMap" style="margin:-4px 0 12px"></p>
+    <div class="c3">
+      <div class="f"><label>Telefon</label><input id="sPhone" value="${esc(s?.phone||'')}" placeholder="+998 78 333 72 72"></div>
+      <div class="f"><label>Ochiladi</label><input id="sOpen" type="time" value="${s?.hours.open||'09:00'}" ${h24?'disabled':''}></div>
+      <div class="f"><label>Yopiladi</label><input id="sClose" type="time" value="${s?.hours.close||'22:00'}" ${h24?'disabled':''}></div>
+    </div>
+    <div class="chk"><label><input type="checkbox" id="s24" ${h24?'checked':''}> 24 soat ochiq</label><label><input type="checkbox" id="sActive" ${s?(s.active?'checked':''):'checked'}> Saytda ko'rsatish</label></div>
+    <div class="c2"><div class="f"><label>Tartib raqami</label><input id="sSort" type="number" value="${s?.sort??0}"></div>
+      <div class="f"><label>Filial rasmi (ixtiyoriy)</label><div class="drop" id="sDrop" data-label="Rasm yuklash">Rasm yuklash</div><input type="file" id="sFile" accept=".jpg,.jpeg,.png,.webp" hidden></div></div>
+    <div id="sPhotoBox"></div>
+    <div class="row"><button class="btn red" id="sSave" style="flex:1">Saqlash</button>${s?`<button class="btn gh" id="sDel">O'chirish</button>`:''}</div>
+    <p class="mut" style="margin-top:10px">Yangi filial saytda va mobil ilovada (xarita, filial tanlash) avtomatik paydo bo'ladi.</p>`);
+  $('#dX').onclick=closeDrawer;
+  let photo=s?.photo||'';
+  const drawPhoto=()=>$('#sPhotoBox').innerHTML=photo?`<div class="row" style="margin-bottom:12px"><img src="${esc(img(photo))}" style="width:160px;border-radius:10px"><button class="btn sm gh" id="sPhDel">Rasmni olib tashlash</button></div>`:'';
+  const wirePh=()=>{ drawPhoto(); const b=$('#sPhDel'); if(b) b.onclick=()=>{photo='';wirePh();}; };
+  wirePh();
+  wireDrop($('#sDrop'),$('#sFile'),r=>{ photo=r.url; wirePh(); });
+  const showMap=()=>{ const a=+$('#sLat').value,b=+$('#sLng').value; $('#sMap').innerHTML=(a&&b)?`<a href="https://yandex.uz/maps/?pt=${b},${a}&z=17&l=map" target="_blank" rel="noopener">Xaritada tekshirish →</a>`:''; };
+  showMap(); $('#sLat').oninput=showMap; $('#sLng').oninput=showMap;
+  $('#sLoc').oninput=()=>{ const r=parseLoc($('#sLoc').value); if(r){ $('#sLat').value=r[0].toFixed(6); $('#sLng').value=r[1].toFixed(6); showMap(); toast('Koordinata olindi'); } };
+  $('#s24').onchange=()=>{ $('#sOpen').disabled=$('#sClose').disabled=$('#s24').checked; };
+  $('#sSave').onclick=async()=>{
+    const err=m=>{ $('#sErr').textContent=m; $('#sErr').hidden=false; $('#drawer').scrollTop=0; };
+    const name=read3('sName'), lat=parseFloat($('#sLat').value), lng=parseFloat($('#sLng').value);
+    if(!name.uz&&!name.ru) return err('Filial nomini kiriting');
+    if(!isFinite(lat)||!isFinite(lng)) return err('Joylashuvni kiriting (havola yoki koordinata)');
+    const all=$('#s24').checked;
+    const body={id:s?.id||null,name,address:read3('sAddr'),lat,lng,phone:$('#sPhone').value.trim(),
+      open:all?'00:00':($('#sOpen').value||'09:00'),close:all?'00:00':($('#sClose').value||'22:00'),
+      active:$('#sActive').checked,sort:+$('#sSort').value||0,photo};
+    $('#sSave').disabled=true;
+    try{ await api('POST','/admin/stores',body); toast('Filial saqlandi'); closeDrawer(); loadStores(); }
+    catch(e){ err(e.message); $('#sSave').disabled=false; }
+  };
+  if(s) $('#sDel').onclick=async()=>{
+    if(!confirm(`"${s.name.uz||s.name.ru}" o'chirilsinmi?`)) return;
+    try{ const r=await api('DELETE','/admin/stores/'+s.id); toast(r.deleted?"O'chirildi":'Buyurtmalar tarixida bor — yashirildi'); closeDrawer(); loadStores(); }catch(e){ toast(e.message,true); }
+  };
+}
+
+/* ================= SETTINGS ================= */
+async function loadSettings(){ S=(await api('GET','/admin/settings')).settings; drawSettings(); }
+function drawSettings(){
+  const soc=S.social||{};
+  $('#setForm').innerHTML=`
+  <div class="box"><h3>Aloqa</h3>
+    <div class="f"><label>Asosiy telefon (sayt tepasida va «Qo'ng'iroq» tugmasida)</label><input id="stPhone" value="${esc(S.phone||'')}"></div>
+    <div class="f"><label>Telegram orqali buyurtma (havola: https://t.me/...)</label><input id="stTg" value="${esc(S.telegramOrder||'')}" placeholder="https://t.me/zikrilla_buyurtma"></div>
+    <label class="mut" style="font-weight:700">Operator raqamlari</label><div id="opList" style="margin-top:6px"></div>
+    <button class="btn sm gh" id="opAdd">+ Operator qo'shish</button>
+  </div>
+  <div class="box"><h3>Ijtimoiy tarmoqlar</h3>
+    ${['instagram','telegram','youtube','facebook','tiktok'].map(k=>`<div class="f"><label>${k[0].toUpperCase()+k.slice(1)}</label><input id="so_${k}" value="${esc(soc[k]||'')}" placeholder="https://..."></div>`).join('')}
+  </div>
+  <div class="box"><h3>Bosh sahifa</h3>
+    ${L3('hTitle','Sarlavha',S.hero?.title)}
+    ${L3('hSub','Kichik matn',S.hero?.subtitle,true)}
+    <div class="f"><label>Bosh rasm</label><div class="row"><img id="hImg" src="${esc(img(S.hero?.image))}" style="width:150px;height:96px;object-fit:cover;border-radius:10px"><div class="drop" id="hDrop" data-label="Yangi rasm yuklash" style="flex:1">Yangi rasm yuklash</div></div><input type="file" id="hFile" accept=".jpg,.jpeg,.png,.webp" hidden></div>
+    ${L3('ann','E\'lon (sayt tepasidagi qizil qator; bo\'sh = ko\'rinmaydi)',S.announcement)}
+    ${L3('about','Biz haqimizda (sayt pastida)',S.about,true)}
+  </div>
+  <div class="box"><h3>Videolar bo'limi</h3>
+    <p class="mut" style="margin-bottom:10px">YouTube havolasi yoki kompyuterdan video yuklang. Bo'sh bo'lsa saytda bo'lim ko'rinmaydi.</p>
+    <div id="vList"></div>
+    <div class="row"><button class="btn sm gh" id="vAdd">+ YouTube havola</button><div class="drop" id="vDrop" data-label="+ Video fayl yuklash" style="padding:7px 12px">+ Video fayl yuklash</div><input type="file" id="vFile" accept=".mp4,.webm,.mov" multiple hidden></div>
+  </div>
+  <div class="box"><h3>Keshbek</h3>
+    <div class="c2"><div class="f"><label>Har xariddan (%)</label><input id="cbPct" type="number" min="0" max="50" step="0.5" value="${S.cashback?.percent??5}"></div>
+    <div class="f"><label>Ball bilan to'lash chegarasi (chekning %)</label><input id="cbMax" type="number" min="0" max="100" value="${S.cashback?.maxShare??30}"></div></div>
+    <p class="mut">Kassada va mobil ilova buyurtmalarida shu foiz qo'llanadi.</p>
+  </div>
+  <div class="box"><h3>Kategoriyalar</h3>
+    <p class="mut" style="margin-bottom:10px">Kodi (lotin, bo'shliqsiz) — o'zgartirmang, mahsulotlar shu kodga bog'langan. Mobil ilova standart 6 tasini taniydi; yangilari ilovada «Ko'mir va sous» ichida ko'rinadi.</p>
+    <div id="catList"></div><button class="btn sm gh" id="catAdd">+ Kategoriya</button>
+  </div>`;
+  // operators
+  let ops=JSON.parse(JSON.stringify(S.operators||[]));
+  const drawOps=()=>{ $('#opList').innerHTML=ops.map((o,i)=>`<div class="li" style="grid-template-columns:1.2fr 1fr 1fr 1fr auto">
+      <div class="f" style="margin:0"><label>Telefon</label><input data-op="${i}" data-k="phone" value="${esc(o.phone||'')}"></div>
+      ${['uz','ru','en'].map(l=>`<div class="f" style="margin:0"><label>Izoh ${l.toUpperCase()}</label><input data-op="${i}" data-k="${l}" value="${esc(o.label?.[l]||'')}"></div>`).join('')}
+      <button class="btn sm gh" data-opd="${i}">✕</button></div>`).join('');
+    $('#opList').querySelectorAll('input').forEach(inp=>inp.oninput=()=>{ const o=ops[+inp.dataset.op]; if(inp.dataset.k==='phone') o.phone=inp.value; else { o.label=o.label||{}; o.label[inp.dataset.k]=inp.value; } });
+    $('#opList').querySelectorAll('[data-opd]').forEach(b=>b.onclick=()=>{ ops.splice(+b.dataset.opd,1); drawOps(); });
+  };
+  drawOps(); $('#opAdd').onclick=()=>{ ops.push({phone:'',label:{uz:'',ru:'',en:''}}); drawOps(); };
+  // hero image
+  let heroImage=S.hero?.image||'';
+  wireDrop($('#hDrop'),$('#hFile'),r=>{ heroImage=r.url; $('#hImg').src=r.url; });
+  // videos
+  let vids=JSON.parse(JSON.stringify(S.videos||[]));
+  const drawV=()=>{ $('#vList').innerHTML=vids.map((v,i)=>`<div class="li" style="grid-template-columns:1.4fr 1fr 1fr 1fr auto">
+      <div class="f" style="margin:0"><label>Havola / fayl</label><input data-v="${i}" data-k="url" value="${esc(v.url||'')}"></div>
+      ${['uz','ru','en'].map(l=>`<div class="f" style="margin:0"><label>Sarlavha ${l.toUpperCase()}</label><input data-v="${i}" data-k="${l}" value="${esc(v.title?.[l]||'')}"></div>`).join('')}
+      <button class="btn sm gh" data-vd="${i}">✕</button></div>`).join('')||'<p class="mut" style="margin-bottom:8px">Hali video yo\'q</p>';
+    $('#vList').querySelectorAll('input').forEach(inp=>inp.oninput=()=>{ const v=vids[+inp.dataset.v]; if(inp.dataset.k==='url') v.url=inp.value.trim(); else { v.title=v.title||{}; v.title[inp.dataset.k]=inp.value; } });
+    $('#vList').querySelectorAll('[data-vd]').forEach(b=>b.onclick=()=>{ vids.splice(+b.dataset.vd,1); drawV(); });
+  };
+  drawV(); $('#vAdd').onclick=()=>{ vids.push({url:'',title:{uz:'',ru:'',en:''}}); drawV(); };
+  wireDrop($('#vDrop'),$('#vFile'),r=>{ vids.push({url:r.url,title:{uz:'',ru:'',en:''}}); drawV(); });
+  // categories
+  let cats=JSON.parse(JSON.stringify(S.categories||[]));
+  const drawC=()=>{ $('#catList').innerHTML=cats.map((c,i)=>`<div class="li" style="grid-template-columns:.8fr 1fr 1fr 1fr auto">
+      <div class="f" style="margin:0"><label>Kodi</label><input data-c="${i}" data-k="id" value="${esc(c.id)}"></div>
+      ${['uz','ru','en'].map(l=>`<div class="f" style="margin:0"><label>${l.toUpperCase()}</label><input data-c="${i}" data-k="${l}" value="${esc(c.name?.[l]||'')}"></div>`).join('')}
+      <button class="btn sm gh" data-cd="${i}">✕</button></div>`).join('');
+    $('#catList').querySelectorAll('input').forEach(inp=>inp.oninput=()=>{ const c=cats[+inp.dataset.c]; if(inp.dataset.k==='id') c.id=inp.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g,''); else { c.name=c.name||{}; c.name[inp.dataset.k]=inp.value; } });
+    $('#catList').querySelectorAll('[data-cd]').forEach(b=>b.onclick=()=>{
+      const c=cats[+b.dataset.cd]; const used=products.filter(p=>p.category===c.id).length;
+      if(used&&!confirm(`Bu kategoriyada ${used} ta mahsulot bor. Baribir o'chirilsinmi?`)) return;
+      cats.splice(+b.dataset.cd,1); drawC(); });
+  };
+  drawC(); $('#catAdd').onclick=()=>{ cats.push({id:'',name:{uz:'',ru:'',en:''}}); drawC(); };
+  // save
+  $('#setSave').onclick=async()=>{
+    const value={...S,
+      phone:$('#stPhone').value.trim(), telegramOrder:$('#stTg').value.trim(),
+      operators:ops.filter(o=>o.phone&&o.phone.trim()),
+      social:Object.fromEntries(['instagram','telegram','youtube','facebook','tiktok'].map(k=>[k,$('#so_'+k).value.trim()])),
+      hero:{title:read3('hTitle'),subtitle:read3('hSub'),image:heroImage},
+      announcement:read3('ann'), about:read3('about'),
+      videos:vids.filter(v=>v.url),
+      categories:cats.filter(c=>c.id),
+      cashback:{percent:+$('#cbPct').value||0,maxShare:+$('#cbMax').value||0}};
+    $('#setSave').disabled=true;
+    try{ S=(await api('PUT','/admin/settings',{settings:value})).settings; toast('Sozlamalar saqlandi — saytda darhol ko\'rinadi'); drawSettings(); drawProducts(); }
+    catch(e){ toast(e.message,true); }
+    $('#setSave').disabled=false;
+  };
+}
+
+/* ================= USERS ================= */
+let uTimer;
+$('#uSearch').oninput=()=>{ clearTimeout(uTimer); uTimer=setTimeout(loadUsers,300); };
+async function loadUsers(){
+  const q=$('#uSearch').value.trim();
+  let r; try{ r=await api('GET','/admin/users'+(q?'?q='+encodeURIComponent(q):'')); }catch(e){ toast(e.message,true); return; }
+  $('#uCnt').textContent=r.users.length+' ta';
+  $('#uBody').innerHTML=r.users.map(u=>`<tr><td><b>${esc(u.name||'—')}</b></td><td><a href="tel:+${u.phone}">${pretty(u.phone)}</a></td>
+    <td><b>${fmt(u.points)}</b></td><td class="hide-sm">${fmt(u.lifetime)}</td>
+    <td class="hide-sm"><span class="pill ${u.registered?'on':'off'}">${u.registered?'saytda kirgan':'faqat kassada'}</span></td>
+    <td class="hide-sm mut">${new Date(u.createdAt).toLocaleDateString()}</td>
+    <td><button class="btn sm gh" data-uk="${u.phone}">Kassada ochish</button></td></tr>`).join('')||'<tr><td colspan="7" class="mut">Topilmadi</td></tr>';
+  $('#uBody').querySelectorAll('[data-uk]').forEach(b=>b.onclick=()=>{
+    $('#tabs').querySelector('[data-tab="kassa"]').click(); $('#kPhone').value=b.dataset.uk; kLookup(); });
+}
+
+/* ================= start ================= */
+async function start(){
+  try{ await loadSettings(); await loadStores(); await loadProducts(); }catch(e){ toast(e.message,true); }
+  loadOrders(); setInterval(loadOrders,8000);
+  const t=ls.get('z_tab'); if(t){ const b=$('#tabs').querySelector(`[data-tab="${t}"]`); if(b) b.click(); } else $('#kPhone').focus();
+}
+boot();
+</script>
+</body>
+</html>
