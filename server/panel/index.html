@@ -198,8 +198,10 @@ td img.th{width:48px;height:48px;object-fit:cover;border-radius:8px;display:bloc
     <section class="sec" id="sec-products">
       <div class="head"><h2>Mahsulotlar</h2>
         <div class="row"><input id="pSearch" placeholder="Qidirish…" style="border:1.5px solid var(--line);border-radius:999px;padding:8px 14px">
+        <button class="btn gh" id="xOut" title="Mahsulot, kategoriya va filiallar — 3 tilda">⬇ Excel yuklab olish</button>
+        <button class="btn gh" id="xIn">⬆ Excel yuklash</button><input type="file" id="xFile" accept=".xlsx" hidden>
         <button class="btn red" id="pNew">+ Yangi mahsulot</button></div></div>
-      <p class="mut" style="margin-bottom:10px">Narxni jadvalning o'zida o'zgartirib, Enter bosing yoki ✓ ni bosing. Rasm, video va tavsif — "Tahrirlash"da.</p>
+      <p class="mut" style="margin-bottom:10px">Narxni jadvalning o'zida o'zgartirib, Enter bosing yoki ✓ ni bosing. Rasm, video va tavsif — "Tahrirlash"da. Ko'p narsani birdan o'zgartirish uchun: Excel'ni yuklab oling, tahrirlang va qayta yuklang (rasm/videolar Excel'ga kirmaydi).</p>
       <table><thead><tr><th></th><th>Nomi</th><th class="hide-sm">Kategoriya</th><th>Narx (so'm)</th><th class="hide-sm">Holat</th><th></th></tr></thead><tbody id="pBody"></tbody></table>
     </section>
 
@@ -408,6 +410,41 @@ function drawOrders(box,list,fresh,actions){
 
 /* ================= PRODUCTS ================= */
 const catName=id=>{const c=(S?.categories||[]).find(c=>c.id===id);return c?(c.name.uz||c.name.ru):id};
+/* ---------- Excel ---------- */
+$('#xOut').onclick=async()=>{
+  try{
+    const r=await fetch('/admin/excel/export',{headers:{'X-Admin-Key':KEY}});
+    if(!r.ok) throw 0;
+    const b=await r.blob(), a=document.createElement('a');
+    const m=(r.headers.get('Content-Disposition')||'').match(/filename="([^"]+)"/);
+    a.href=URL.createObjectURL(b); a.download=m?m[1]:'zikrilla.xlsx'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  }catch(_){ toast("Excel yuklab bo'lmadi",true); }
+};
+$('#xIn').onclick=()=>$('#xFile').click();
+$('#xFile').onchange=async e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f) return;
+  const send=async apply=>{ const fd=new FormData(); fd.append('file',f); return api('POST','/admin/excel/import?apply='+apply,fd,true); };
+  let r; try{ r=await send(false); }catch(err){ toast(err.message,true); return; }
+  const sec=(t,o)=>{ if(!o) return ''; const c=o.created.length,u=o.updated.length,d=(o.removed||[]).length;
+    const li=(arr,lab)=>arr.length?`<p class="mut" style="margin:4px 0 2px">${lab}:</p><ul style="margin:0 0 6px 18px">${arr.slice(0,40).map(x=>`<li>${esc(x)}</li>`).join('')}${arr.length>40?`<li>… yana ${arr.length-40} ta</li>`:''}</ul>`:'';
+    return `<div class="card" style="margin-bottom:10px"><b>${t}</b><p>Yangi: <b>${c}</b> · O'zgargan: <b>${u}</b> · O'zgarmagan: ${o.unchanged}${d?` · O'chirilgan: <b>${d}</b>`:''}</p>${li(o.created,'Yangi')}${li(o.updated,"O'zgargan")}${li(o.removed||[],"O'chirilgan kategoriyalar")}</div>`; };
+  const rep=r.report||{}, total=['Mahsulotlar','Kategoriyalar','Filiallar'].reduce((n,k)=>n+(rep[k]?rep[k].created.length+rep[k].updated.length+(rep[k].removed||[]).length:0),0);
+  const errs=(r.errors||[]).map(x=>`<li><b>${esc(x.sheet)}${x.row?`, ${x.row}-qator`:''}:</b> ${esc(x.message)}</li>`).join('');
+  openDrawer(`<div class="r" style="margin-bottom:14px"><h2>Excel: tekshiruv</h2><button class="btn sm gh" id="dX">✕</button></div>
+    <p class="mut" style="margin-bottom:12px">Fayl: ${esc(f.name)}. Hali hech narsa yozilmadi.</p>
+    ${r.ok?'':`<div class="card" style="border-color:var(--brand);background:var(--red-s);margin-bottom:12px"><b style="color:var(--brand-d)">Xatolar — tuzatib, qayta yuklang</b><ul style="margin:6px 0 0 18px">${errs}</ul></div>`}
+    ${sec('Mahsulotlar',rep['Mahsulotlar'])}${sec('Kategoriyalar',rep['Kategoriyalar'])}${sec('Filiallar',rep['Filiallar'])}
+    <div class="row"><button class="btn red" id="xApply" style="flex:1" ${r.ok&&total?'':'disabled'}>${r.ok?(total?`Tasdiqlash (${total} ta o'zgarish)`:"O'zgarish yo'q"):'Avval xatolarni tuzating'}</button><button class="btn gh" id="xCancel">Bekor qilish</button></div>`);
+  $('#dX').onclick=$('#xCancel').onclick=closeDrawer;
+  $('#xApply').onclick=async()=>{
+    $('#xApply').disabled=true; $('#xApply').textContent='Yozilmoqda…';
+    try{ const a=await send(true);
+      if(!a.applied){ toast((a.errors&&a.errors[0]&&a.errors[0].message)||'Yozilmadi',true); $('#xApply').disabled=false; $('#xApply').textContent='Tasdiqlash'; return; }
+      closeDrawer(); toast('Excel qo\'llandi ✓'); await loadSettings(); await loadProducts(); try{ await loadStores(); }catch(_){}
+    }catch(err){ toast(err.message,true); $('#xApply').disabled=false; $('#xApply').textContent='Tasdiqlash'; }
+  };
+};
 async function loadProducts(){ const r=await api('GET','/admin/products'); products=r.products; drawProducts(); }
 $('#pSearch').oninput=drawProducts;
 function drawProducts(){

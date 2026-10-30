@@ -252,3 +252,43 @@ def kassa_undo(tx_id: int, db: Session = Depends(db_session)):
                      store_id=t.store_id, note=f"undo:{t.id}"))
     db.commit()
     return {"ok": True, "customer": _customer_json(u, db)}
+
+
+# =================== Excel: ommaviy tahrirlash ===================
+import datetime as _dt  # noqa: E402
+import os as _os  # noqa: E402
+
+from fastapi import File, UploadFile  # noqa: E402
+from fastapi.responses import Response  # noqa: E402
+
+from .. import excel_io  # noqa: E402
+
+_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+_BACKUP_DIR = _os.path.abspath(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "..", "uploads", "excel_nusxalar"))
+
+
+@admin.get("/excel/export")
+def excel_export(db: Session = Depends(db_session)):
+    data = excel_io.export_xlsx(db)
+    name = f"zikrilla_{_dt.datetime.now().strftime('%Y-%m-%d_%H-%M')}.xlsx"
+    return Response(content=data, media_type=_XLSX,
+                    headers={"Content-Disposition": f'attachment; filename="{name}"'})
+
+
+@admin.post("/excel/import")
+async def excel_import(apply: bool = False, file: UploadFile = File(...), db: Session = Depends(db_session)):
+    if not (file.filename or "").lower().endswith(".xlsx"):
+        raise api_error(400, "bad_type", "Faqat .xlsx fayl (paneldan yuklab olingan shablon)")
+    data = await file.read()
+    if len(data) > 10 * 1024 * 1024:
+        raise api_error(400, "too_big", "Fayl 10 MB dan oshmasin")
+    backup = None
+    if apply:
+        _os.makedirs(_BACKUP_DIR, exist_ok=True)
+        backup = f"oldin_{_dt.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
+        with open(_os.path.join(_BACKUP_DIR, backup), "wb") as f:
+            f.write(excel_io.export_xlsx(db))
+    result = excel_io.import_xlsx(db, data, apply)
+    if backup and result["applied"]:
+        result["backup"] = f"/uploads/excel_nusxalar/{backup}"
+    return result
