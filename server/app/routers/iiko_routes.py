@@ -156,3 +156,31 @@ def loyalty_migrate(dry_run: bool = True, db: Session = Depends(db_session)):
     total = sum(x["points"] for x in plan)
     return {"dryRun": dry_run, "customers": len(plan), "totalPoints": total,
             "plan": plan if dry_run else None, "moved": moved, "errors": errors}
+
+
+@router.post("/loyalty/sync-registered")
+def loyalty_sync_registered(dry_run: bool = True, db: Session = Depends(db_session)):
+    """Allaqachon ro'yxatdan o'tgan mijozlarni iiko'da ochish (balans o'zgarmaydi).
+
+    dry_run=true — faqat ro'yxat. dry_run=false — iiko'da yo'qlari ochiladi va Cashback dasturiga qo'shiladi.
+    Ball ko'chirilmaydi: bu faqat mijoz kartochkasi.
+    """
+    if not iiko.enabled():
+        raise api_error(400, "iiko_disabled", ".env da iiko kalitlari yo'q")
+    users = (db.query(User).filter(User.registered.is_(True), User.iiko_customer_id.is_(None))
+             .order_by(User.created_at).all())
+    plan = [{"phone": u.phone, "name": f"{u.first_name} {u.last_name}".strip()} for u in users]
+    if dry_run:
+        return {"dryRun": True, "customers": len(plan), "plan": plan}
+    done, errors = [], []
+    for u in users:
+        try:
+            info = iiko.ensure_customer(u.phone, u.first_name, u.last_name)
+            u.iiko_customer_id = info["id"]
+            db.commit()
+            loyalty_sync.forget(u.phone)
+            done.append({"phone": u.phone, "iikoId": info["id"], "balance": iiko.wallet_balance(info)})
+        except Exception as e:
+            db.rollback()
+            errors.append({"phone": u.phone, "error": str(e)[:200]})
+    return {"dryRun": False, "synced": done, "errors": errors}
