@@ -51,7 +51,3 @@ AndroidManifest uchun eslatmalar: `mobile/android_eslatma/`.
 - `.env`, imzo kalitlari, baza nusxalari va yuklangan fayllar repoga yuklanmaydi (`.gitignore`).
 - Kodda hech qanday parol yoki kalit yo'q; hammasi `.env` orqali beriladi.
 - `ADMIN_KEY` ni albatta uzun va tasodifiy qiling: standart qiymat (`admin`) faqat lokal sinov uchun.
-
-## Litsenziya
-
-Kod "SHUXRAT DODA" MChJ (Zikrilla Marinade) mulki. Ko'rish uchun ochiq; ruxsatsiz tijoriy foydalanish taqiqlanadi.
