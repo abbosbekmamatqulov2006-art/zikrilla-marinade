@@ -459,6 +459,28 @@ const Map<String, Map<String, String>> _strings = {
   'logout_q': {'ru': 'Выйти из аккаунта?', 'en': 'Log out of your account?'},
   'cancel': {'ru': 'Отмена', 'en': 'Cancel'},
   'hello': {'ru': 'Привет, {name}!', 'en': 'Hi, {name}!'},
+  // ---------- v6: sozlamalardan keladigan bo'limlar ----------
+  'tab_order': {'ru': 'Заказ', 'en': 'Order'},
+  'order_title': {'ru': 'Как заказать', 'en': 'How to order'},
+  'order_how': {'ru': 'Позвоните или напишите в Telegram — заберёте сами или привезём. Оплата картой или на кассе.', 'en': 'Call us or message on Telegram — pick up or get it delivered. Pay by card or at the till.'},
+  'call_now': {'ru': 'Позвонить', 'en': 'Call'},
+  'write_telegram': {'ru': 'Написать в Telegram', 'en': 'Message on Telegram'},
+  'operators': {'ru': 'Операторы', 'en': 'Operators'},
+  'social': {'ru': 'Мы в соцсетях', 'en': 'Social media'},
+  'videos': {'ru': 'Видео', 'en': 'Videos'},
+  'description': {'ru': 'Описание', 'en': 'Description'},
+  'watch_video': {'ru': 'Смотреть видео', 'en': 'Watch video'},
+  'read_min': {'ru': '{n} мин чтения', 'en': '{n} min read'},
+  'my_phone_card': {'ru': 'Назовите этот номер на кассе — баллы начислятся на него', 'en': 'Give this number at the till — points go to it'},
+  'tier_next': {'ru': 'До уровня «{name}» ещё {n} баллов', 'en': '{n} more points to {name}'},
+  'tier_max': {'ru': 'У вас максимальный уровень', 'en': 'You are at the top level'},
+  'tiers': {'ru': 'Уровни', 'en': 'Levels'},
+  'from_points': {'ru': 'от {n} баллов', 'en': 'from {n} points'},
+  'contacts': {'ru': 'Контакты', 'en': 'Contacts'},
+  'about_us': {'ru': 'О нас', 'en': 'About us'},
+  'order_now': {'ru': 'Заказать', 'en': 'Order'},
+  'cashback_pct': {'ru': '{n}% кешбэк с каждой покупки', 'en': '{n}% cashback on every purchase'},
+  'school_empty': {'ru': 'Пока нет статей', 'en': 'No articles yet'},
 };
 
 /// All keys defined for ru/en (used by tests to check Uzbek coverage).

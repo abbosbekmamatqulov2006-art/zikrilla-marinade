@@ -6,6 +6,7 @@ import '../l10n.dart';
 import '../nav.dart';
 import '../state.dart';
 import '../ui.dart';
+import 'contact.dart';
 
 /// Portion rules: 4 pcs per adult, 2 per child, +15% for 4h+, 1 kg coal per 12 skewers.
 class Calc {
@@ -372,20 +373,8 @@ class _CalcResultScreenState extends State<CalcResultScreen> {
         ),
       ),
       bottomNavigationBar: BottomBar(
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: PrimaryButton(
-                context.t('to_list'),
-                outlined: true,
-                onTap: () => toast(context, context.tr('list_saved')),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              flex: 3,
-              child: PrimaryButton(
+        child: context.watch<AppState>().site.cartMode
+            ? PrimaryButton(
                 context.t('all_to_cart'),
                 onTap: () {
                   final s = context.read<AppState>();
@@ -393,10 +382,8 @@ class _CalcResultScreenState extends State<CalcResultScreen> {
                   toast(context, context.tr('added_to_cart'));
                   goTab(context, 2);
                 },
-              ),
-            ),
-          ],
-        ),
+              )
+            : PrimaryButton(context.t('order_now'), onTap: () => showOrderSheet(context)),
       ),
     );
   }

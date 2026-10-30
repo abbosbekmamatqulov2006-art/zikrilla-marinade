@@ -10,6 +10,7 @@ import 'api/backend.dart';
 import 'api/models.dart';
 import 'data.dart';
 import 'location.dart';
+import 'site.dart';
 
 enum AuthStatus { loading, chooseLanguage, loggedOut, needsProfile, ready }
 
@@ -41,6 +42,12 @@ class AppState extends ChangeNotifier {
         token = await _secure.read(key: 'token');
       } catch (_) {}
     }
+    final rawSite = prefs.getString('site');
+    if (rawSite != null) {
+      try {
+        _applySite(jsonDecode(rawSite) as Map<String, dynamic>);
+      } catch (_) {}
+    }
     final rawUser = prefs.getString('user');
     if (rawUser != null) user = User.fromJson(jsonDecode(rawUser) as Map<String, dynamic>);
 
@@ -51,6 +58,7 @@ class AppState extends ChangeNotifier {
       status = user?.registered == true ? AuthStatus.ready : AuthStatus.needsProfile;
     }
     notifyListeners();
+    unawaited(loadSite());
     unawaited(loadStores().then((_) => locateIfPermitted()));
     unawaited(loadProducts());
     if (status == AuthStatus.ready) {
@@ -136,11 +144,43 @@ class AppState extends ChangeNotifier {
       await _setUser(u);
       points = loyalty.balance;
       tier = loyalty.tier;
+      lifetime = loyalty.lifetime;
       loyaltyUpdatedAt = DateTime.now();
       notifyListeners();
     } on ApiException catch (e) {
       if (e.code == 'unauthorized') await logout();
     }
+  }
+
+  // ---------- sozlamalar (admin panel) ----------
+  SiteConfig site = SiteConfig.empty();
+
+  void _applySite(Map<String, dynamic> raw) {
+    site = SiteConfig(raw);
+    cashbackPercent = site.cashbackPercent;
+  }
+
+  /// Panel → Sozlamalar / Ilova dagi hamma narsa. Oxirgi nusxa telefonda saqlanadi (internet bo'lmasa ham ishlaydi).
+  Future<void> loadSite() async {
+    if (backend.isMock) return;
+    try {
+      final raw = await backend.settings();
+      if (raw.isEmpty) return;
+      _applySite(raw);
+      notifyListeners();
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('site', jsonEncode(raw));
+    } catch (_) {}
+  }
+
+  /// Hammasini serverdan qayta yuklash (pastga tortib yangilash).
+  Future<void> refreshAll() async {
+    await Future.wait([
+      loadSite(),
+      loadProducts(),
+      loadStores(),
+      if (status == AuthStatus.ready) refreshMe(),
+    ]);
   }
 
   // ---------- language ----------
@@ -269,7 +309,7 @@ class AppState extends ChangeNotifier {
 
   int get deliveryFee => delivery && !plus ? 15000 : 0;
   int get maxPoints {
-    final cap = (cartSubtotal * 0.3).floor();
+    final cap = (cartSubtotal * site.maxShare / 100).floor();
     return (cap < points ? cap : points) ~/ 1000 * 1000;
   }
 
@@ -283,6 +323,7 @@ class AppState extends ChangeNotifier {
 
   // ---------- loyalty ----------
   int points = 0;
+  int lifetime = 0;
   String tier = 'bronze';
   DateTime? loyaltyUpdatedAt;
   bool plus = false;

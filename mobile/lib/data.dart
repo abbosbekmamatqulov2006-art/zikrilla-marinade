@@ -1,6 +1,15 @@
 import 'l10n.dart';
 
-enum Category { skewers, minced, chicken, fish, extras, sets }
+/// Mahsulot rasmi yoki videosi (admin paneldan yuklangan).
+class MediaItem {
+  final String type; // image | video
+  final String url;
+  const MediaItem(this.type, this.url);
+  bool get isVideo => type == 'video';
+}
+
+/// Keshbek foizi — serverdagi sozlamadan yangilanadi (panel → Sozlamalar → Keshbek).
+double cashbackPercent = 5;
 
 class Product {
   final String id;
@@ -9,7 +18,7 @@ class Product {
   final L ingredients;
   final int price;
   final String image;
-  final Category category;
+  final String category; // kategoriya kodi (panel → Sozlamalar → Kategoriyalar)
   final bool lowStock;
   final bool isExtra;
   final double rating;
@@ -20,6 +29,8 @@ class Product {
   final bool spicy;
   final bool weeklyDeal;
   final L? unit;
+  final L? description;
+  final List<MediaItem> media;
 
   const Product({
     required this.id,
@@ -39,10 +50,15 @@ class Product {
     this.spicy = false,
     this.weeklyDeal = false,
     this.unit,
+    this.description,
+    this.media = const [],
   });
 
-  /// Cashback points per piece (5%).
-  int get points => (price * 0.05).round();
+  /// Bitta dona uchun keshbek balli (sozlamadagi foiz bo'yicha).
+  int get points => (price * cashbackPercent / 100).round();
+
+  /// Galereya: avval yuklangan rasm/videolar, bo'lmasa asosiy rasm.
+  List<MediaItem> get gallery => media.isNotEmpty ? media : [MediaItem('image', image)];
 }
 
 /// Ilova ichidagi zaxira katalog; ishga tushganda serverdagisi bilan almashtiriladi.
@@ -62,7 +78,7 @@ List<Product> products = <Product>[
     ),
     price: 16000,
     image: 'assets/img/lamb.jpg',
-    category: Category.skewers,
+    category: 'skewers',
     lowStock: true,
     rating: 4.8,
     reviews: 132,
@@ -83,7 +99,7 @@ List<Product> products = <Product>[
     ),
     price: 8000,
     image: 'assets/img/chicken.jpg',
-    category: Category.chicken,
+    category: 'chicken',
     rating: 4.7,
     reviews: 98,
     grillMinutes: 15,
@@ -106,7 +122,7 @@ List<Product> products = <Product>[
     ),
     price: 10000,
     image: 'assets/img/qiyma.jpg',
-    category: Category.minced,
+    category: 'minced',
     rating: 4.9,
     reviews: 210,
     grillMinutes: 10,
@@ -129,7 +145,7 @@ List<Product> products = <Product>[
     ),
     price: 17000,
     image: 'assets/img/chef.jpg',
-    category: Category.skewers,
+    category: 'skewers',
     rating: 4.9,
     reviews: 76,
     grillMinutes: 9,
@@ -151,7 +167,7 @@ List<Product> products = <Product>[
     ),
     price: 11000,
     image: 'assets/img/qiyma_tray.jpg',
-    category: Category.minced,
+    category: 'minced',
     rating: 4.6,
     reviews: 54,
     grillMinutes: 10,
@@ -173,7 +189,7 @@ List<Product> products = <Product>[
     ),
     price: 19000,
     image: 'assets/img/grill_man.jpg',
-    category: Category.fish,
+    category: 'fish',
     lowStock: true,
     rating: 4.5,
     reviews: 31,
@@ -187,7 +203,7 @@ List<Product> products = <Product>[
     ingredients: L('Берёзовый древесный уголь', 'Birch wood charcoal', 'Qayin daraxti ko‘miri'),
     price: 32000,
     image: 'assets/img/coal.jpg',
-    category: Category.extras,
+    category: 'extras',
     isExtra: true,
     reviews: 40,
     unit: L('упаковка', 'pack', 'qadoq'),
@@ -203,7 +219,7 @@ List<Product> products = <Product>[
     ),
     price: 12000,
     image: 'assets/img/sauce.jpg',
-    category: Category.extras,
+    category: 'extras',
     isExtra: true,
     reviews: 62,
     unit: L('шт', 'pc', 'dona'),
@@ -215,7 +231,7 @@ List<Product> products = <Product>[
     ingredients: L('Нержавеющая сталь', 'Stainless steel', 'Zanglamas po‘lat'),
     price: 18000,
     image: 'assets/img/skewer.jpg',
-    category: Category.extras,
+    category: 'extras',
     isExtra: true,
     reviews: 22,
     unit: L('набор', 'set', 'to‘plam'),
@@ -232,18 +248,9 @@ Product _missingProduct(String id) => Product(
   ingredients: const L('', '', ''),
   price: 0,
   image: 'assets/img/logo.png',
-  category: Category.extras,
+  category: 'extras',
   isExtra: true,
 );
-
-Category _cat(String? c) => switch (c) {
-  'skewers' => Category.skewers,
-  'minced' => Category.minced,
-  'chicken' => Category.chicken,
-  'fish' => Category.fish,
-  'sets' => Category.sets,
-  _ => Category.extras,
-};
 
 L _l(dynamic j) {
   final m = (j is Map) ? j : const {};
@@ -258,7 +265,7 @@ Product productFromJson(Map<String, dynamic> j) => Product(
   ingredients: _l(j['ingredients']),
   price: (j['price'] as num? ?? 0).round(),
   image: (j['image'] as String?)?.isNotEmpty == true ? j['image'] as String : 'assets/img/logo.png',
-  category: _cat(j['category'] as String?),
+  category: (j['category'] as String?) ?? 'extras',
   lowStock: j['lowStock'] as bool? ?? false,
   isExtra: j['isExtra'] as bool? ?? (j['category'] == 'extras'),
   rating: (j['rating'] as num? ?? 4.8).toDouble(),
@@ -267,6 +274,13 @@ Product productFromJson(Map<String, dynamic> j) => Product(
   spicy: j['spicy'] as bool? ?? false,
   weeklyDeal: j['weeklyDeal'] as bool? ?? false,
   unit: j['unit'] == null ? null : _l(j['unit']),
+  description: j['description'] == null ? null : _l(j['description']),
+  media: [
+    if (j['media'] is List)
+      for (final m in j['media'] as List)
+        if (m is Map && (m['url'] as String?)?.isNotEmpty == true)
+          MediaItem(m['type'] == 'video' ? 'video' : 'image', m['url'] as String),
+  ],
 );
 
 class PastOrder {

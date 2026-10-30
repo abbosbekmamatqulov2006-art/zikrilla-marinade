@@ -50,6 +50,9 @@ abstract class Backend {
   Future<List<OrderInfo>> orders();
   Future<OrderInfo> order(String id);
 
+  /// Sayt va ilova sozlamalari (admin panel → Sozlamalar / Ilova).
+  Future<Map<String, dynamic>> settings();
+
   static Backend create() => apiUrl.isEmpty ? MockBackend() : HttpBackend(apiUrl);
 }
 
@@ -142,6 +145,10 @@ class HttpBackend implements Backend {
   Future<List<Product>> products() async => [
     for (final p in (await _req('GET', '/products'))['products'] as List) productFromJson(p as Map<String, dynamic>),
   ];
+
+  @override
+  Future<Map<String, dynamic>> settings() async =>
+      (await _req('GET', '/settings'))['settings'] as Map<String, dynamic>? ?? const {};
 
   @override
   Future<OrderInfo> createOrder(OrderRequest req) async =>
@@ -245,6 +252,9 @@ class MockBackend implements Backend {
 
   @override
   Future<List<Product>> products() async => data.products;
+
+  @override
+  Future<Map<String, dynamic>> settings() async => const {};
 
   @override
   Future<OrderInfo> createOrder(OrderRequest req) async {

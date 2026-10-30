@@ -3,11 +3,12 @@ import 'package:provider/provider.dart';
 
 import '../l10n.dart';
 import '../nav.dart';
+import '../site.dart';
 import '../state.dart';
 import '../ui.dart';
 import 'auth.dart';
 import 'calculator.dart';
-import 'group.dart';
+import 'contact.dart';
 import 'language.dart';
 import 'school.dart';
 import 'stores.dart';
@@ -44,13 +45,16 @@ class ProfileScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                StatusBadge(context.t('tier_${s.tier}')),
+                if (s.site.tierById(s.tier) case final t?) StatusBadge(t.name.of(context)),
               ],
             ),
           ),
           const SizedBox(height: 20),
-          Text(context.t('order_history'), style: tBlock),
-          const SizedBox(height: 12),
+          if (s.site.cartMode && s.history.isNotEmpty) ...[
+            Text(context.t('order_history'), style: tBlock),
+            const SizedBox(height: 12),
+          ],
+          if (s.site.cartMode)
           for (final o in s.history.take(4))
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
@@ -110,20 +114,17 @@ class ProfileScreen extends StatelessWidget {
                 context.t('svc_calc'),
                 onTap: () => push(context, const CalculatorScreen()),
               ),
+              if (s.site.school.isNotEmpty)
+                _MenuItem(
+                  Icons.menu_book_outlined,
+                  context.t('school_title'),
+                  onTap: () => push(context, const SchoolScreen()),
+                ),
               _MenuItem(
-                Icons.menu_book_outlined,
-                context.t('school_title'),
-                onTap: () => push(context, const SchoolScreen()),
-              ),
-              _MenuItem(
-                Icons.groups_outlined,
-                context.t('group_title'),
-                onTap: () => push(context, const GroupOrderScreen()),
-              ),
-              _MenuItem(
-                Icons.lightbulb_outline_rounded,
-                context.t('ideas'),
-                onTap: () => push(context, const IdeasScreen()),
+                Icons.call_outlined,
+                context.t('order_title'),
+                value: s.site.phone,
+                onTap: () => showOrderSheet(context),
               ),
             ],
           ),
@@ -141,30 +142,23 @@ class ProfileScreen extends StatelessWidget {
                 value: s.selectedStore?.name.of(context),
                 onTap: () => push(context, const StoresScreen()),
               ),
-              _MenuItem(
-                Icons.workspace_premium_outlined,
-                context.t('manage_sub'),
-                value: context.t(s.plus ? 'active' : 'inactive'),
-                onTap: () => s.setTab(3),
-              ),
-              _MenuItem(
-                Icons.notifications_none_rounded,
-                context.t('notifications'),
-                onTap: () => toast(context, context.tr('demo_note')),
-              ),
+
               _MenuItem(
                 Icons.language_rounded,
                 context.t('language'),
                 value: context.t('lang_name'),
                 onTap: () => showLanguageSheet(context),
               ),
-              _MenuItem(
-                Icons.chat_bubble_outline_rounded,
-                context.t('support'),
-                onTap: () => toast(context, context.tr('demo_note')),
-              ),
+              if (s.site.telegramOrder.isNotEmpty)
+                _MenuItem(
+                  Icons.chat_bubble_outline_rounded,
+                  context.t('support'),
+                  onTap: () => openLink(s.site.telegramOrder),
+                ),
             ],
           ),
+          const SizedBox(height: 16),
+          const SocialRow(),
           const SizedBox(height: 12),
           _Menu(children: [_MenuItem(Icons.logout_rounded, context.t('logout'), onTap: () => _confirmLogout(context))]),
           const SizedBox(height: 20),
@@ -172,7 +166,7 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 6),
           Center(
             child: Text(
-              s.backend.isMock ? 'v1.1.0 · test' : 'v1.1.0',
+              s.backend.isMock ? 'v2.0.0 · test' : 'v2.0.0',
               style: tsx(12, w: FontWeight.w600, c: C.text3),
             ),
           ),

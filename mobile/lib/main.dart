@@ -9,6 +9,7 @@ import 'screens/auth.dart';
 import 'screens/cart.dart';
 import 'screens/cashback.dart';
 import 'screens/catalog.dart';
+import 'screens/contact.dart';
 import 'screens/home.dart';
 import 'screens/language.dart';
 import 'screens/profile.dart';
@@ -82,11 +83,20 @@ class RootShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
-    const pages = [HomeScreen(), CatalogScreen(), CartScreen(), CashbackScreen(), ProfileScreen()];
+    final cartMode = state.site.cartMode;
+    final pages = [
+      const HomeScreen(),
+      const CatalogScreen(),
+      cartMode ? const CartScreen() : const ContactScreen(),
+      const CashbackScreen(),
+      const ProfileScreen(),
+    ];
     final items = [
       (Icons.home_outlined, Icons.home_rounded, 'tab_home'),
       (Icons.grid_view_outlined, Icons.grid_view_rounded, 'tab_catalog'),
-      (Icons.shopping_bag_outlined, Icons.shopping_bag_rounded, 'tab_cart'),
+      cartMode
+          ? (Icons.shopping_bag_outlined, Icons.shopping_bag_rounded, 'tab_cart')
+          : (Icons.call_outlined, Icons.call_rounded, 'tab_order'),
       (Icons.toll_outlined, Icons.toll_rounded, 'tab_cashback'),
       (Icons.person_outline_rounded, Icons.person_rounded, 'tab_profile'),
     ];
@@ -115,7 +125,7 @@ class RootShell extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Badge(
-                            isLabelVisible: i == 2 && state.cartCount > 0,
+                            isLabelVisible: cartMode && i == 2 && state.cartCount > 0,
                             backgroundColor: C.red,
                             label: Text(
                               '${state.cartCount}',

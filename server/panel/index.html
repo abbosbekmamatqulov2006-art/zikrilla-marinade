@@ -131,6 +131,7 @@ td img.th{width:48px;height:48px;object-fit:cover;border-radius:8px;display:bloc
       <button data-tab="orders" aria-pressed="false">Buyurtmalar</button>
       <button data-tab="products" aria-pressed="false">Mahsulotlar</button>
       <button data-tab="stores" aria-pressed="false">Filiallar</button>
+      <button data-tab="app" aria-pressed="false">Ilova</button>
       <button data-tab="settings" aria-pressed="false">Sozlamalar</button>
       <button data-tab="users" aria-pressed="false">Mijozlar</button>
     </div>
@@ -215,6 +216,13 @@ td img.th{width:48px;height:48px;object-fit:cover;border-radius:8px;display:bloc
     <section class="sec" id="sec-settings">
       <div class="head"><h2>Sozlamalar</h2><button class="btn red" id="setSave">Hammasini saqlash</button></div>
       <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(420px,1fr))" id="setForm"></div>
+    </section>
+
+    <!-- ================= ILOVA ================= -->
+    <section class="sec" id="sec-app">
+      <div class="head"><h2>Mobil ilova</h2><button class="btn red" id="apSave">Ilovani saqlash</button></div>
+      <p class="mut" style="margin-bottom:12px">Bu yerdagi o'zgarishlar ilovada keyingi ochilishda ko'rinadi. Mahsulot, narx, kategoriya, filial, telefon, ijtimoiy tarmoq va videolar — sayt bilan umumiy (Mahsulotlar, Filiallar, Sozlamalar bo'limlarida).</p>
+      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(420px,1fr))" id="apForm"></div>
     </section>
 
     <!-- ================= MIJOZLAR ================= -->
@@ -615,7 +623,7 @@ function editStore(s){
 }
 
 /* ================= SETTINGS ================= */
-async function loadSettings(){ S=(await api('GET','/admin/settings')).settings; drawSettings(); }
+async function loadSettings(){ S=(await api('GET','/admin/settings')).settings; drawSettings(); drawApp(); }
 function drawSettings(){
   const soc=S.social||{};
   $('#setForm').innerHTML=`
@@ -646,7 +654,7 @@ function drawSettings(){
     <p class="mut">Kassada va mobil ilova buyurtmalarida shu foiz qo'llanadi.</p>
   </div>
   <div class="box"><h3>Kategoriyalar</h3>
-    <p class="mut" style="margin-bottom:10px">Kodi (lotin, bo'shliqsiz) — o'zgartirmang, mahsulotlar shu kodga bog'langan. Mobil ilova standart 6 tasini taniydi; yangilari ilovada «Ko'mir va sous» ichida ko'rinadi.</p>
+    <p class="mut" style="margin-bottom:10px">Kodi (lotin, bo'shliqsiz) — o'zgartirmang, mahsulotlar shu kodga bog'langan. Sayt va mobil ilova (v6) kategoriyalarni shu yerdan oladi.</p>
     <div id="catList"></div><button class="btn sm gh" id="catAdd">+ Kategoriya</button>
   </div>`;
   // operators
@@ -696,11 +704,121 @@ function drawSettings(){
       announcement:read3('ann'), about:read3('about'),
       videos:vids.filter(v=>v.url),
       categories:cats.filter(c=>c.id),
-      cashback:{percent:+$('#cbPct').value||0,maxShare:+$('#cbMax').value||0}};
+      cashback:{...(S.cashback||{}),percent:+$('#cbPct').value||0,maxShare:+$('#cbMax').value||0}};
     $('#setSave').disabled=true;
-    try{ S=(await api('PUT','/admin/settings',{settings:value})).settings; toast('Sozlamalar saqlandi — saytda darhol ko\'rinadi'); drawSettings(); drawProducts(); }
+    try{ S=(await api('PUT','/admin/settings',{settings:value})).settings; toast('Sozlamalar saqlandi — saytda darhol ko\'rinadi'); drawSettings(); drawApp(); drawProducts(); }
     catch(e){ toast(e.message,true); }
     $('#setSave').disabled=false;
+  };
+}
+
+/* ================= ILOVA ================= */
+const APP_SECTIONS=[['categories','Kategoriyalar qatori'],['calculator','Hisoblagich'],['school','Maktab (maqolalar)'],['videos','Videolar'],['deals','Haftalik aksiyalar'],['stores','Filiallar'],['contacts','Qo\'ng\'iroq va Telegram tugmalari']];
+const clone=o=>JSON.parse(JSON.stringify(o||null));
+function linkSel(id,val){
+  const cats=(S.categories||[]);
+  const opts=[['','Hech qayerga'],['catalog','Katalog'],['school','Maktab'],...cats.map(c=>['cat:'+c.id,'Kategoriya: '+(c.name?.uz||c.id)])];
+  const isUrl=(val||'').startsWith('url:');
+  return `<select data-link="${id}">${opts.map(o=>`<option value="${esc(o[0])}" ${!isUrl&&o[0]===(val||'')?'selected':''}>${esc(o[1])}</option>`).join('')}<option value="url:" ${isUrl?'selected':''}>Havola (sayt, Instagram...)</option></select>
+    <input data-linkurl="${id}" placeholder="https://..." value="${esc(isUrl?val.slice(4):'')}" style="margin-top:6px;${isUrl?'':'display:none'}">`;
+}
+function drawApp(){
+  const A=clone(S.app)||{}; A.sections=A.sections||{}; A.banners=A.banners||[]; A.school=A.school||[];
+  const CB=clone(S.cashback)||{}; CB.tiers=CB.tiers||[];
+  $('#apForm').innerHTML=`
+  <div class="box"><h3>Buyurtma usuli</h3>
+    <label class="row" style="margin-bottom:8px"><input type="radio" name="apOrd" value="call" ${A.ordering!=='cart'?'checked':''}> <span><b>Qo'ng'iroq va Telegram</b> — mahsulotda «Qo'ng'iroq qilish» va «Telegram» tugmalari, savat yo'q (sayt bilan bir xil)</span></label>
+    <label class="row"><input type="radio" name="apOrd" value="cart" ${A.ordering==='cart'?'checked':''}> <span><b>Ilovada savat</b> — mijoz ilovada buyurtma beradi, u «Buyurtmalar» bo'limiga tushadi</span></label>
+  </div>
+  <div class="box"><h3>Bosh sahifa bo'limlari</h3>
+    <p class="mut" style="margin-bottom:10px">Belgini olib tashlasangiz, bo'lim ilovada ko'rinmaydi.</p>
+    ${APP_SECTIONS.map(([k,l])=>`<label class="row" style="margin-bottom:6px"><input type="checkbox" data-sec="${k}" ${A.sections[k]!==false?'checked':''}> ${l}</label>`).join('')}
+  </div>
+  <div class="box" style="grid-column:1/-1"><h3>Bannerlar (bosh sahifa slayderi)</h3>
+    <p class="mut" style="margin-bottom:10px">Bo'sh bo'lsa, Sozlamalar → Bosh sahifa dagi sarlavha va rasm ko'rsatiladi. Rasm nisbati taxminan 16:9.</p>
+    <div id="bnList"></div><button class="btn sm gh" id="bnAdd">+ Banner qo'shish</button>
+  </div>
+  <div class="box" style="grid-column:1/-1"><h3>Maktab — maqolalar va retseptlar</h3>
+    <p class="mut" style="margin-bottom:10px">Ilovadagi «Maktab» bo'limi. Matnda yangi qator uchun Enter bosing. Video — YouTube havolasi yoki yuklangan fayl.</p>
+    <div id="scList"></div><button class="btn sm gh" id="scAdd">+ Maqola qo'shish</button>
+  </div>
+  <div class="box" style="grid-column:1/-1"><h3>Keshbek tariflari (darajalar)</h3>
+    <p class="mut" style="margin-bottom:10px">«Dan» — mijoz jami shuncha ball yig'ganda daraja ochiladi. Birinchisi 0 dan boshlansin. Keshbek foizi — Sozlamalar → Keshbek.</p>
+    <div id="tiList"></div><button class="btn sm gh" id="tiAdd">+ Daraja qo'shish</button>
+    ${L3('tiNote','Keshbek sahifasidagi izoh',CB.note,true)}
+  </div>`;
+  // --- sections
+  $('#apForm').querySelectorAll('[data-sec]').forEach(c=>c.onchange=()=>{ A.sections[c.dataset.sec]=c.checked; });
+  $('#apForm').querySelectorAll('[name=apOrd]').forEach(r=>r.onchange=()=>{ if(r.checked) A.ordering=r.value; });
+  const tri=(pref,i,key,obj,area)=>['uz','ru','en'].map(l=>area
+      ?`<div class="f" style="margin:0"><label>${key} ${l.toUpperCase()}</label><textarea rows="4" data-${pref}="${i}" data-f="${key}" data-l="${l}">${esc(obj?.[l]||'')}</textarea></div>`
+      :`<div class="f" style="margin:0"><label>${key} ${l.toUpperCase()}</label><input data-${pref}="${i}" data-f="${key}" data-l="${l}" value="${esc(obj?.[l]||'')}"></div>`).join('');
+  const bindTri=(root,pref,arr,map)=>root.querySelectorAll(`[data-${pref}][data-l]`).forEach(inp=>inp.oninput=()=>{
+      const it=arr[+inp.dataset[pref]], f=map[inp.dataset.f]; it[f]=it[f]||{}; it[f][inp.dataset.l]=inp.value; });
+  const moveBtns=(pref,i,n)=>`<div class="row" style="gap:4px"><button class="btn sm gh" data-${pref}up="${i}" ${i===0?'disabled':''}>↑</button><button class="btn sm gh" data-${pref}dn="${i}" ${i===n-1?'disabled':''}>↓</button><button class="btn sm gh" data-${pref}del="${i}">✕</button></div>`;
+  const bindMove=(root,pref,arr,redraw)=>{
+    root.querySelectorAll(`[data-${pref}up]`).forEach(b=>b.onclick=()=>{ const i=+b.dataset[pref+'up']; [arr[i-1],arr[i]]=[arr[i],arr[i-1]]; redraw(); });
+    root.querySelectorAll(`[data-${pref}dn]`).forEach(b=>b.onclick=()=>{ const i=+b.dataset[pref+'dn']; [arr[i+1],arr[i]]=[arr[i],arr[i+1]]; redraw(); });
+    root.querySelectorAll(`[data-${pref}del]`).forEach(b=>b.onclick=()=>{ if(confirm("O'chirilsinmi?")){ arr.splice(+b.dataset[pref+'del'],1); redraw(); } });
+  };
+  // --- banners
+  const drawBn=()=>{ const el=$('#bnList');
+    el.innerHTML=A.banners.map((b,i)=>`<div class="li" style="grid-template-columns:170px 1fr;align-items:start">
+      <div><img src="${esc(img(b.image))}" style="width:160px;height:90px;object-fit:cover;border-radius:10px;display:block;margin-bottom:6px">
+        <div class="drop" id="bnDrop${i}" data-label="Rasm yuklash" style="padding:6px">Rasm yuklash</div><input type="file" id="bnFile${i}" accept=".jpg,.jpeg,.png,.webp" hidden></div>
+      <div><div class="c3">${tri('bn',i,'Sarlavha',b.title)}</div><div class="c3" style="margin-top:6px">${tri('bn',i,'Kichik matn',b.subtitle)}</div>
+        <div class="row" style="margin-top:8px;align-items:flex-start"><div class="f" style="margin:0;flex:1"><label>Bosilganda</label>${linkSel('bn'+i,b.link)}</div>${moveBtns('bn',i,A.banners.length)}</div></div></div>`).join('')||'<p class="mut" style="margin-bottom:8px">Banner yo\'q — standart bosh rasm ko\'rinadi</p>';
+    bindTri(el,'bn',A.banners,{'Sarlavha':'title','Kichik matn':'subtitle'});
+    A.banners.forEach((b,i)=>{ wireDrop($('#bnDrop'+i),$('#bnFile'+i),r=>{ b.image=r.url; drawBn(); }); });
+    wireLinks(el,id=>A.banners[+id.slice(2)]);
+    bindMove(el,'bn',A.banners,drawBn); };
+  function wireLinks(el,get){
+    el.querySelectorAll('[data-link]').forEach(sel=>sel.onchange=()=>{ const it=get(sel.dataset.link), u=el.querySelector(`[data-linkurl="${sel.dataset.link}"]`);
+      if(sel.value==='url:'){ u.style.display=''; it.link='url:'+u.value.trim(); } else { u.style.display='none'; it.link=sel.value; } });
+    el.querySelectorAll('[data-linkurl]').forEach(u=>u.oninput=()=>{ get(u.dataset.linkurl).link='url:'+u.value.trim(); });
+  }
+  drawBn(); $('#bnAdd').onclick=()=>{ A.banners.push({image:'',title:{uz:'',ru:'',en:''},subtitle:{uz:'',ru:'',en:''},link:'catalog'}); drawBn(); };
+  // --- school
+  const drawSc=()=>{ const el=$('#scList');
+    el.innerHTML=A.school.map((a,i)=>`<div class="li" style="grid-template-columns:170px 1fr;align-items:start">
+      <div><img src="${esc(img(a.image))}" style="width:160px;height:110px;object-fit:cover;border-radius:10px;display:block;margin-bottom:6px">
+        <div class="drop" id="scDrop${i}" data-label="Rasm yuklash" style="padding:6px">Rasm yuklash</div><input type="file" id="scFile${i}" accept=".jpg,.jpeg,.png,.webp" hidden></div>
+      <div><div class="c3">${tri('sc',i,'Sarlavha',a.title)}</div><div class="c3" style="margin-top:6px">${tri('sc',i,'Matn',a.text,true)}</div>
+        <div class="row" style="margin-top:8px;align-items:flex-end;flex-wrap:wrap">
+          <div class="f" style="margin:0;flex:2;min-width:200px"><label>Video (YouTube havola yoki fayl)</label><input data-scv="${i}" value="${esc(a.video||'')}" placeholder="https://youtu.be/..."></div>
+          <div class="drop" id="scVDrop${i}" data-label="Video yuklash" style="padding:7px 10px">Video yuklash</div><input type="file" id="scVFile${i}" accept=".mp4,.webm,.mov" hidden>
+          <div class="f" style="margin:0;width:110px"><label>O'qish (daqiqa)</label><input type="number" min="0" data-scm="${i}" value="${a.minutes||''}"></div>
+          ${moveBtns('sc',i,A.school.length)}</div></div></div>`).join('')||'<p class="mut" style="margin-bottom:8px">Maqola yo\'q — ilovada «Maktab» ko\'rinmaydi</p>';
+    bindTri(el,'sc',A.school,{'Sarlavha':'title','Matn':'text'});
+    el.querySelectorAll('[data-scv]').forEach(inp=>inp.oninput=()=>{ A.school[+inp.dataset.scv].video=inp.value.trim(); });
+    el.querySelectorAll('[data-scm]').forEach(inp=>inp.oninput=()=>{ A.school[+inp.dataset.scm].minutes=+inp.value||0; });
+    A.school.forEach((a,i)=>{ wireDrop($('#scDrop'+i),$('#scFile'+i),r=>{ a.image=r.url; drawSc(); }); wireDrop($('#scVDrop'+i),$('#scVFile'+i),r=>{ a.video=r.url; drawSc(); }); });
+    bindMove(el,'sc',A.school,drawSc); };
+  drawSc(); $('#scAdd').onclick=()=>{ A.school.push({id:'a'+Date.now().toString(36),image:'',video:'',minutes:3,title:{uz:'',ru:'',en:''},text:{uz:'',ru:'',en:''}}); drawSc(); };
+  // --- tiers
+  const drawTi=()=>{ const el=$('#tiList');
+    el.innerHTML=CB.tiers.map((t,i)=>`<div class="li" style="grid-template-columns:110px 130px 1fr;align-items:start">
+      <div class="f" style="margin:0"><label>Kodi</label><input data-tik="${i}" value="${esc(t.id||'')}"></div>
+      <div class="f" style="margin:0"><label>Dan (ball)</label><input type="number" min="0" data-tif="${i}" value="${t.from??0}"></div>
+      <div><div class="c3">${tri('ti',i,'Nomi',t.name)}</div><div class="c3" style="margin-top:6px">${tri('ti',i,'Imtiyoz',t.perks)}</div>
+        <div style="margin-top:8px">${moveBtns('ti',i,CB.tiers.length)}</div></div></div>`).join('');
+    bindTri(el,'ti',CB.tiers,{'Nomi':'name','Imtiyoz':'perks'});
+    el.querySelectorAll('[data-tik]').forEach(inp=>inp.oninput=()=>{ CB.tiers[+inp.dataset.tik].id=inp.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g,''); });
+    el.querySelectorAll('[data-tif]').forEach(inp=>inp.oninput=()=>{ CB.tiers[+inp.dataset.tif].from=+inp.value||0; });
+    bindMove(el,'ti',CB.tiers,drawTi); };
+  drawTi(); $('#tiAdd').onclick=()=>{ CB.tiers.push({id:'t'+(CB.tiers.length+1),from:0,name:{uz:'',ru:'',en:''},perks:{uz:'',ru:'',en:''}}); drawTi(); };
+  // --- save
+  $('#apSave').onclick=async()=>{
+    const fill=o=>{ o=o||{}; const b=o.uz||o.ru||o.en||''; return {uz:o.uz||b,ru:o.ru||b,en:o.en||b}; };
+    const banners=A.banners.filter(b=>b.image||b.title?.uz||b.title?.ru).map(b=>({...b,title:fill(b.title),subtitle:fill(b.subtitle)}));
+    const school=A.school.filter(a=>a.title?.uz||a.title?.ru).map(a=>({...a,title:fill(a.title),text:fill(a.text)}));
+    const tiers=CB.tiers.filter(t=>t.id).map(t=>({...t,name:fill(t.name),perks:fill(t.perks)})).sort((a,b)=>a.from-b.from);
+    if(A.school.length!==school.length && !confirm("Sarlavhasiz maqolalar saqlanmaydi. Davom etilsinmi?")) return;
+    const value={...S, app:{...A,banners,school}, cashback:{...CB,tiers,note:read3('tiNote')}};
+    $('#apSave').disabled=true;
+    try{ S=(await api('PUT','/admin/settings',{settings:value})).settings; toast("Ilova sozlamalari saqlandi ✓"); drawApp(); drawSettings(); }
+    catch(e){ toast(e.message,true); }
+    $('#apSave').disabled=false;
   };
 }
 

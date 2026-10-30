@@ -303,6 +303,12 @@ class Photo extends StatelessWidget {
 
 /// "assets/..." -> ilova ichidan; "/uploads/..." yoki "http..." -> serverdan.
 Widget smartImage(String path, {double? width, double? height, BoxFit fit = BoxFit.cover}) {
+  if (path.isEmpty) return Image.asset('assets/img/logo.png', width: width, height: height, fit: BoxFit.contain);
+  // "/app/assets/assets/img/x.jpg" — saytdagi standart rasmlar; ilovada ular ichida bor
+  if (path.startsWith('/app/assets/')) {
+    return Image.asset(path.substring('/app/assets/'.length), width: width, height: height, fit: fit,
+        errorBuilder: (_, _, _) => Image.asset('assets/img/logo.png', width: width, height: height, fit: BoxFit.contain));
+  }
   if (path.startsWith('http') || path.startsWith('/')) {
     final url = path.startsWith('http') ? path : '$apiUrl$path';
     return Image.network(
@@ -310,7 +316,7 @@ Widget smartImage(String path, {double? width, double? height, BoxFit fit = BoxF
       width: width,
       height: height,
       fit: fit,
-      errorBuilder: (_, __, ___) => Image.asset('assets/img/logo.png', width: width, height: height, fit: BoxFit.contain),
+      errorBuilder: (_, _, _) => Image.asset('assets/img/logo.png', width: width, height: height, fit: BoxFit.contain),
     );
   }
   return Image.asset(path, width: width, height: height, fit: fit);

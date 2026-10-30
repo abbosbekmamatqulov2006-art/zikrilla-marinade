@@ -115,14 +115,16 @@ class RegisterData {
 
 class Loyalty {
   final int balance;
-  final String tier; // bronze | silver | gold
+  final String tier; // sozlamalardagi daraja kodi (bronze | silver | gold | ...)
   final String? iikoCustomerId;
-  const Loyalty({required this.balance, required this.tier, this.iikoCustomerId});
+  final int lifetime; // jami yig'ilgan ball
+  const Loyalty({required this.balance, required this.tier, this.iikoCustomerId, this.lifetime = 0});
 
   factory Loyalty.fromJson(Map<String, dynamic> j) => Loyalty(
     balance: (j['balance'] as num? ?? 0).round(),
     tier: j['tier'] as String? ?? 'bronze',
     iikoCustomerId: j['iikoCustomerId'] as String?,
+    lifetime: (j['lifetime'] as num? ?? 0).round(),
   );
 }
 

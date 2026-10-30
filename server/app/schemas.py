@@ -21,12 +21,17 @@ def user_json(u: User) -> dict:
 
 
 def tier_of(points_lifetime: int) -> str:
-    from . import config
-    if points_lifetime >= config.TIER_GOLD_AT:
-        return "gold"
-    if points_lifetime >= config.TIER_SILVER_AT:
-        return "silver"
-    return "bronze"
+    """Daraja: sozlamalardagi tariflardan (panel → Ilova → Tariflar)."""
+    from .site_settings import current_tiers
+    best, best_from = None, -1
+    for t in current_tiers():
+        try:
+            f = int(t.get("from") or 0)
+        except (TypeError, ValueError):
+            continue
+        if points_lifetime >= f and f > best_from:
+            best, best_from = t.get("id"), f
+    return best or "bronze"
 
 
 def loyalty_json(u: User) -> dict:
