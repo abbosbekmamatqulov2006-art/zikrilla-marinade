@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /panel/
+Disallow: /admin/
+Sitemap: https://zikrilla-marinade.uz/sitemap.xml
