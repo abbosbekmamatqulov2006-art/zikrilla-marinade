@@ -63,6 +63,11 @@ DEFAULTS: dict = {
             "categories": True, "calculator": True, "school": True,
             "videos": True, "deals": True, "stores": True, "contacts": True,
         },
+        "autoNotify": {"product": True, "store": True},   # yangi mahsulot/filial qo'shilganda hammaga xabar
+        "feedback": {                  # xariddan keyin baho so'rash
+            "enabled": True, "delayHours": 24,
+            "question": {"uz": "Xaridingiz yoqdimi?", "ru": "Как вам покупка?", "en": "How was your purchase?"},
+        },
         "school": [
             {"id": "skewer-guide", "image": "/app/assets/assets/img/guide_hero.jpg", "video": "", "minutes": 4,
              "title": {"uz": "Sixga qanday terish kerak", "ru": "Как правильно нанизывать шашлык",

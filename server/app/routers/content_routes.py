@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from .. import iiko, loyalty_sync
+from .. import engage, iiko, loyalty_sync
 from ..auth import api_error, current_user, db_session, require_admin
 from ..models import LoyaltyTx, Order, Store, User
 from ..schemas import loyalty_json, store_json, tier_of
@@ -101,6 +101,7 @@ def admin_upsert_store(body: StoreIn, db: Session = Depends(db_session)):
         raise api_error(400, "bad_coords", "Koordinatalar noto'g'ri")
     if not (body.name.uz or body.name.ru):
         raise api_error(400, "bad_name", "Filial nomini kiriting")
+    created = False
     if body.id:
         s = db.get(Store, body.id)
         if s is None:
@@ -111,6 +112,7 @@ def admin_upsert_store(body: StoreIn, db: Session = Depends(db_session)):
             sid = f"{sid}{uuid.uuid4().hex[:4]}"
         s = Store(id=sid)
         db.add(s)
+        created = True
     s.name = _fill(body.name)
     s.address = _fill(body.address)
     s.lat, s.lng = body.lat, body.lng
@@ -120,6 +122,14 @@ def admin_upsert_store(body: StoreIn, db: Session = Depends(db_session)):
     s.sort = body.sort
     s.photo = body.photo or None
     db.commit()
+    if created and s.active and engage.auto_enabled(db, "store"):
+        try:
+            engage.notify_all(db, "store",
+                              {k: f"{t} {s.name.get(k, '')}" for k, t in
+                               {"uz": "Yangi filial ochildi:", "ru": "Открылся новый филиал:", "en": "New branch:"}.items()},
+                              s.address, s.photo, "stores")
+        except Exception:
+            pass
     return {"store": store_json(s) | {"active": s.active}}
 
 

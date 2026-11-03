@@ -132,6 +132,8 @@ td img.th{width:48px;height:48px;object-fit:cover;border-radius:8px;display:bloc
       <button data-tab="products" aria-pressed="false">Mahsulotlar</button>
       <button data-tab="stores" aria-pressed="false">Filiallar</button>
       <button data-tab="app" aria-pressed="false">Ilova</button>
+      <button data-tab="notif" aria-pressed="false">Xabarlar</button>
+      <button data-tab="reviews" aria-pressed="false">Baholar</button>
       <button data-tab="settings" aria-pressed="false">Sozlamalar</button>
       <button data-tab="users" aria-pressed="false">Mijozlar</button>
     </div>
@@ -225,6 +227,40 @@ td img.th{width:48px;height:48px;object-fit:cover;border-radius:8px;display:bloc
       <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(420px,1fr))" id="apForm"></div>
     </section>
 
+    <!-- ================= XABARLAR ================= -->
+    <section class="sec" id="sec-notif">
+      <div class="head"><h2>Xabarlar (bildirishnomalar)</h2><span class="pill" id="pushPill">…</span></div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(420px,1fr))">
+        <div class="box"><h3>Yangi xabar — hammaga</h3>
+          <div id="nfForm"></div>
+          <label class="row" style="margin:8px 0 12px"><input type="checkbox" id="nfPush" checked> Telefon ekraniga ham yuborish (push)</label>
+          <button class="btn red" id="nfSend" style="width:100%">Yuborish</button>
+          <p class="mut" style="margin-top:8px">Xabar ilovadagi qo'ng'iroqcha va sayt kabinetida ko'rinadi. Haftada 1–2 tadan ko'p yubormang.</p>
+        </div>
+        <div class="box"><h3>Avtomatik xabarlar va baho so'rash</h3>
+          <label class="row" style="margin-bottom:8px"><input type="checkbox" id="anProduct"> Yangi mahsulot qo'shilganda hammaga xabar</label>
+          <label class="row" style="margin-bottom:14px"><input type="checkbox" id="anStore"> Yangi filial qo'shilganda hammaga xabar</label>
+          <label class="row" style="margin-bottom:8px"><input type="checkbox" id="fbOn"> Xariddan keyin baho so'rash</label>
+          <div class="f"><label>Xariddan necha soat keyin so'ralsin</label><input type="number" id="fbDelay" min="1" max="168"></div>
+          <div id="fbQ"></div>
+          <button class="btn gh" id="anSave">Saqlash</button>
+          <p class="mut" style="margin-top:8px">Xarid iiko kassasida mijoz telefon raqami bilan chekka biriktirilganda aniqlanadi (iikoCard). Bitta mijozdan kuniga ko'pi bilan bir marta so'raladi.</p>
+        </div>
+      </div>
+      <h3 style="margin:18px 0 10px">Yuborilgan xabarlar</h3>
+      <table><thead><tr><th>Sana</th><th>Xabar</th><th class="hide-sm">Turi</th><th class="hide-sm">Push</th><th></th></tr></thead><tbody id="nfBody"></tbody></table>
+    </section>
+
+    <!-- ================= BAHOLAR ================= -->
+    <section class="sec" id="sec-reviews">
+      <div class="head"><h2>Mijozlar baholari</h2>
+        <div class="row"><select id="rvFilter" style="border:1.5px solid var(--line);border-radius:999px;padding:8px 14px">
+          <option value="5">Hammasi</option><option value="3">Faqat past (1–3 ⭐)</option><option value="2">Juda past (1–2 ⭐)</option></select>
+          <button class="btn gh" id="rvScan" title="iiko'dagi yangi xaridlarni hozir tekshirish">Xaridlarni tekshirish</button></div></div>
+      <div class="grid" id="rvStats" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:14px"></div>
+      <table><thead><tr><th>Sana</th><th>Baho</th><th>Izoh</th><th class="hide-sm">Filial / mahsulot</th><th class="hide-sm">Mijoz</th></tr></thead><tbody id="rvBody"></tbody></table>
+    </section>
+
     <!-- ================= MIJOZLAR ================= -->
     <section class="sec" id="sec-users">
       <div class="head"><h2>Mijozlar</h2><div class="row"><input id="uSearch" placeholder="Ism yoki telefon…" style="border:1.5px solid var(--line);border-radius:999px;padding:8px 14px"><span class="pill off" id="uCnt">0</span></div></div>
@@ -280,6 +316,8 @@ $('#tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{
   $('#sec-'+b.dataset.tab).classList.add('show');
   ls.set('z_tab',b.dataset.tab);
   if(b.dataset.tab==='users') loadUsers();
+  if(b.dataset.tab==='notif') loadNotifs();
+  if(b.dataset.tab==='reviews') loadReviews();
   if(b.dataset.tab==='kassa') $('#kPhone').focus();
 });
 
@@ -820,6 +858,75 @@ function drawApp(){
     catch(e){ toast(e.message,true); }
     $('#apSave').disabled=false;
   };
+}
+
+/* ================= XABARLAR ================= */
+const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
+const dt=s=>{ const d=new Date(s); return d.toLocaleDateString()+' '+d.toTimeString().slice(0,5); };
+let nfImage='';
+function drawNotifForm(){
+  $('#nfForm').innerHTML=`${L3('nfT','Sarlavha',{})}${L3('nfB','Matn',{},true)}
+    <div class="f"><label>Rasm (ixtiyoriy)</label><div class="row"><img id="nfImg" style="width:120px;height:68px;object-fit:cover;border-radius:8px;${nfImage?'':'display:none'}" src="${esc(nfImage?img(nfImage):'')}"><div class="drop" id="nfDrop" data-label="Rasm yuklash" style="flex:1">Rasm yuklash</div></div><input type="file" id="nfFile" accept=".jpg,.jpeg,.png,.webp" hidden></div>
+    <div class="f"><label>Bosilganda ochiladi</label>${linkSel('nf',S?.app?.banners?'catalog':'catalog')}</div>`;
+  wireDrop($('#nfDrop'),$('#nfFile'),r=>{ nfImage=r.url; $('#nfImg').src=r.url; $('#nfImg').style.display=''; });
+  const sel=$('#nfForm').querySelector('[data-link="nf"]'), u=$('#nfForm').querySelector('[data-linkurl="nf"]');
+  sel.onchange=()=>{ u.style.display=sel.value==='url:'?'':'none'; };
+}
+function nfLink(){ const sel=$('#nfForm').querySelector('[data-link="nf"]'); return sel.value==='url:'?'url:'+$('#nfForm').querySelector('[data-linkurl="nf"]').value.trim():sel.value; }
+async function loadNotifs(){
+  drawNotifForm();
+  const a=S?.app||{}, an=a.autoNotify||{}, fb=a.feedback||{};
+  $('#anProduct').checked=an.product!==false; $('#anStore').checked=an.store!==false;
+  $('#fbOn').checked=fb.enabled!==false; $('#fbDelay').value=fb.delayHours||24;
+  $('#fbQ').innerHTML=L3('fbQt','Savol matni',fb.question||{});
+  let r; try{ r=await api('GET','/admin/notifications'); }catch(e){ toast(e.message,true); return; }
+  const p=$('#pushPill'); p.className='pill '+(r.push.configured?'on':'off');
+  p.textContent=r.push.configured?`Push ulangan · ${r.devices} ta telefon`:'Push ulanmagan (faqat ilova ichida)';
+  const kinds={promo:'Aksiya',product:'Yangi mahsulot',store:'Yangi filial',feedback:'Baho',system:'Tizim'};
+  $('#nfBody').innerHTML=r.items.map(n=>`<tr><td class="mut">${dt(n.createdAt)}</td>
+    <td><b>${esc(n.title?.uz||'')}</b><div class="mut">${esc(n.body?.uz||'')}</div></td>
+    <td class="hide-sm">${kinds[n.kind]||n.kind}</td><td class="hide-sm">${n.pushed?'✓':'—'}</td>
+    <td><button class="btn sm gh" data-nd="${n.id}">O'chirish</button></td></tr>`).join('')||'<tr><td colspan="5" class="mut">Hali xabar yuborilmagan</td></tr>';
+  $('#nfBody').querySelectorAll('[data-nd]').forEach(b=>b.onclick=async()=>{
+    if(!confirm("Xabar ilova va saytdan o'chirilsinmi? (Telefonga ketgan push qaytmaydi)")) return;
+    try{ await api('DELETE','/admin/notifications/'+b.dataset.nd); loadNotifs(); }catch(e){ toast(e.message,true); } });
+}
+$('#nfSend').onclick=async()=>{
+  const t=read3('nfT'); if(!t.uz&&!t.ru){ toast('Sarlavhani yozing',true); return; }
+  const pushIt=$('#nfPush').checked;
+  if(!confirm(`Xabar barcha mijozlarga yuborilsinmi?${pushIt?' Telefon ekraniga ham keladi.':''}`)) return;
+  $('#nfSend').disabled=true;
+  try{ await api('POST','/admin/notifications',{title:t,body:read3('nfB'),image:nfImage,link:nfLink(),push:pushIt});
+    toast('Xabar yuborildi ✓'); nfImage=''; loadNotifs(); }
+  catch(e){ toast(e.message,true); }
+  $('#nfSend').disabled=false;
+};
+$('#anSave').onclick=async()=>{
+  const app={...(S.app||{}), autoNotify:{product:$('#anProduct').checked, store:$('#anStore').checked},
+    feedback:{enabled:$('#fbOn').checked, delayHours:Math.max(1,+$('#fbDelay').value||24), question:read3('fbQt')}};
+  try{ S=(await api('PUT','/admin/settings',{settings:{...S,app}})).settings; toast('Saqlandi ✓'); drawApp(); }
+  catch(e){ toast(e.message,true); }
+};
+
+/* ================= BAHOLAR ================= */
+$('#rvFilter').onchange=()=>loadReviews();
+$('#rvScan').onclick=async()=>{ try{ const r=await api('POST','/admin/feedback/scan'); toast(`Yangi xaridlar: ${r.newRequests}, so'raldi: ${r.notified}`); loadReviews(); }catch(e){ toast(e.message,true); } };
+async function loadReviews(){
+  let s,r; try{ [s,r]=await Promise.all([api('GET','/admin/reviews/summary'),api('GET','/admin/reviews?max_rating='+$('#rvFilter').value)]); }
+  catch(e){ toast(e.message,true); return; }
+  const top=(list,f)=>list.slice(0,5).map(x=>`<div class="r" style="padding:3px 0"><span>${esc(f(x))}</span><b>${x.avg.toFixed(1)} ⭐ <span class="mut">(${x.count})</span></b></div>`).join('')||'<p class="mut">Hali yo\'q</p>';
+  const maxD=Math.max(1,...Object.values(s.distribution));
+  $('#rvStats').innerHTML=`
+    <div class="box"><h3>Umumiy</h3><div style="font-size:34px;font-weight:900">${s.avg?s.avg.toFixed(1):'—'} <span style="font-size:18px">⭐</span></div>
+      <p class="mut">${s.count} ta baho · so'ralgan: ${s.requests.asked}, javob: ${s.requests.answered}</p>
+      ${[5,4,3,2,1].map(i=>`<div class="r" style="gap:8px;padding:2px 0"><span style="width:24px">${i}★</span><div style="flex:1;height:8px;background:var(--line);border-radius:9px"><div style="width:${s.distribution[i]/maxD*100}%;height:8px;background:${i<=2?'var(--brand)':'var(--leaf)'};border-radius:9px"></div></div><span class="mut" style="width:28px;text-align:right">${s.distribution[i]}</span></div>`).join('')}</div>
+    <div class="box"><h3>Filiallar (pastdan)</h3>${top(s.byStore,x=>x.store?.uz||x.storeId)}</div>
+    <div class="box"><h3>Mahsulotlar (pastdan)</h3>${top(s.byProduct,x=>x.product?.uz||x.productId)}</div>`;
+  $('#rvBody').innerHTML=r.items.map(x=>`<tr style="${x.rating<=2?'background:var(--red-s)':''}"><td class="mut">${dt(x.createdAt)}</td>
+    <td style="color:${x.rating<=2?'var(--brand)':'var(--amber)'};white-space:nowrap">${stars(x.rating)}</td>
+    <td>${esc(x.comment)||'<span class="mut">—</span>'}</td>
+    <td class="hide-sm">${esc(x.store?.uz||'')}${x.product?`<div class="mut">${esc(x.product.uz||'')}</div>`:''}</td>
+    <td class="hide-sm">${esc(x.customer.name||'')}<div class="mut"><a href="tel:+${x.customer.phone}">${pretty(x.customer.phone)}</a></div></td></tr>`).join('')||'<tr><td colspan="5" class="mut">Hali baho yo\'q</td></tr>';
 }
 
 /* ================= USERS ================= */

@@ -194,3 +194,14 @@ def topup(customer_id: str, amount: int, comment: str) -> None:
         "organizationId": LOYALTY_ORG, "customerId": customer_id,
         "walletId": prog["walletId"], "sum": amount, "comment": comment,
     })
+
+
+def customer_transactions(customer_id: str, date_from, date_to, page_size: int = 100) -> list[dict]:
+    """Mijozning iikoCard tranzaksiyalari (xarid, ball yozish/yechish). Sanalar — Toshkent vaqti."""
+    fmt = "%Y-%m-%d %H:%M:%S.000"
+    d = _post("/api/1/loyalty/iiko/customer/transactions/by_date", {
+        "organizationId": LOYALTY_ORG, "customerId": customer_id,
+        "dateFrom": date_from.strftime(fmt), "dateTo": date_to.strftime(fmt),
+        "pageNumber": 0, "pageSize": page_size,
+    })
+    return d.get("transactions") or []

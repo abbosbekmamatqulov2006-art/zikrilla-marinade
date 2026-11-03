@@ -7,9 +7,9 @@ from fastapi import APIRouter, Depends, File, UploadFile
 from pydantic import BaseModel
 from sqlalchemy.orm import Session, selectinload
 
-from .. import loyalty_sync
+from .. import engage, loyalty_sync
 from ..auth import api_error, db_session, require_admin
-from ..models import LoyaltyTx, Order, OrderItem, Product, User
+from ..models import LoyaltyTx, Order, OrderItem, Product, User, now
 from ..schemas import order_json, product_json
 from ..site_settings import cashback_percent
 
@@ -59,6 +59,13 @@ def set_status(order_id: str, status: str, db: Session = Depends(db_session)):
         user.points_lifetime += earned
         o.points_earned = earned
         db.add(LoyaltyTx(user_id=user.id, order_id=o.id, delta=earned, reason="order_earn"))
+    if status == "done" and prev != "done":
+        try:
+            fb = engage._feedback_cfg(db)
+            if fb["enabled"]:
+                engage.add_request(db, o.user_id, f"order:{o.id}", o.store_id, o.total, now(), fb["delay"])
+        except Exception:
+            pass
 
     if status == "cancelled" and prev != "cancelled" and o.points_used > 0:
         user = db.get(User, o.user_id)
@@ -120,11 +127,13 @@ def upsert_product(body: ProductIn, db: Session = Depends(db_session)):
         raise api_error(400, "bad_price", "Narx manfiy bo'lmaydi")
     if not (body.name.uz or body.name.ru):
         raise api_error(400, "bad_name", "Mahsulot nomini kiriting")
+    is_new = False
     if body.id:
         p = db.get(Product, body.id)
         if p is None:
             raise api_error(404, "not_found", "Tahrirlanayotgan mahsulot topilmadi")
     else:
+        is_new = True
         pid = re.sub(r"[^a-z0-9]+", "-", (body.name.uz or body.name.ru).lower()).strip("-")[:24] or "p"
         if db.get(Product, pid) is not None:          # nomdosh mahsulot bor — ustiga yozmaymiz
             pid = f"{pid}-{uuid.uuid4().hex[:5]}"
@@ -149,6 +158,14 @@ def upsert_product(body: ProductIn, db: Session = Depends(db_session)):
     p.active = body.active
     p.sort = body.sort
     db.commit()
+    if is_new and p.active and engage.auto_enabled(db, "product"):
+        try:
+            engage.notify_all(db, "product",
+                              {k: f"{t} {p.name.get(k, '')}" for k, t in
+                               {"uz": "Yangi mahsulot:", "ru": "Новинка:", "en": "New:"}.items()},
+                              p.subtitle, p.image or None, f"product:{p.id}")
+        except Exception:
+            pass
     return {"ok": True, "product": product_json(p) | {"active": p.active}}
 
 

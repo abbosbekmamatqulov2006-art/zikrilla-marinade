@@ -112,6 +112,12 @@ section{padding-block:68px}
 .price{font-weight:860; font-variation-settings:"wdth" 112; font-size:20px; margin-top:8px}
 .price small{color:var(--mut); font-weight:600; font-size:13px; font-variation-settings:"wdth" 100}
 .empty{color:var(--mut); padding:30px 0}
+.cat-block{margin-bottom:34px}
+.cat-h{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:14px}
+.cat-h h3{font-size:22px; font-weight:860; font-variation-settings:"wdth" 112}
+.cat-h button{color:var(--brand); font-weight:800; font-size:14px; white-space:nowrap}
+.more{display:block; width:100%; margin-top:14px; padding:13px; border:1.5px solid var(--line); border-radius:var(--r-m); font-weight:800; color:var(--ink); background:#fff}
+.more:hover{border-color:var(--brand); color:var(--brand)}
 
 /* calculator */
 .calc{background:var(--char); color:#fff; padding-block:50px}
@@ -205,6 +211,27 @@ footer .tel{font-size:24px; font-weight:860; font-variation-settings:"wdth" 112;
 .lcard{background:var(--leaf); color:#fff; border-radius:var(--r-m); padding:18px 20px}
 .lcard .bal{font-size:34px; font-weight:860; font-variation-settings:"wdth" 114}
 .lcard .tr{display:flex; justify-content:space-between; font-size:14px; color:#DFF0E6}
+.cab-dot{position:relative}
+.cab-dot::after{content:""; position:absolute; top:6px; right:6px; width:9px; height:9px; border-radius:50%; background:var(--brand); border:2px solid #fff}
+.fbx{border:1.5px solid #F2D7A6; background:#FFF8EC; border-radius:var(--r-m); padding:16px; display:flex; flex-direction:column; gap:10px}
+.fbx b{font-size:16px}
+.fbx .where{font-size:13.5px; color:var(--mut); margin-top:-6px}
+.stars{display:flex; gap:4px; justify-content:center}
+.stars button{font-size:36px; line-height:1; color:#CFCAC5; padding:2px 4px; background:none}
+.stars button.on{color:#F5B301}
+.fbx .lbl{text-align:center; font-size:14px; font-weight:700; min-height:20px; color:var(--mut)}
+.fbx select,.fbx textarea{border:1.5px solid var(--line); border-radius:12px; padding:10px 12px; background:#fff; font:inherit; width:100%}
+.fbx textarea{min-height:76px; resize:vertical}
+.fbx .row2{display:flex; gap:8px}
+.fbx .row2 .btn{flex:1; min-width:0; padding-left:10px; padding-right:10px; white-space:nowrap}
+.ntl{display:flex; flex-direction:column; gap:8px; max-height:300px; overflow:auto}
+.nt{display:flex; gap:10px; border:1px solid var(--line); border-radius:12px; padding:10px 12px; cursor:default}
+.nt[data-link]{cursor:pointer}
+.nt img{width:56px; height:56px; border-radius:10px; object-fit:cover; flex:none}
+.nt .tt{font-weight:800; font-size:14.5px}
+.nt .bd{font-size:13.5px; color:var(--mut)}
+.nt small{font-size:12px; color:var(--mut)}
+.nt .new{display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--brand); margin-left:6px; vertical-align:middle}
 .qr{display:flex; flex-direction:column; align-items:center; gap:8px; padding:16px; border:1px dashed var(--line); border-radius:var(--r-m)}
 .qr #qrBox{background:#fff; padding:8px}
 .qr span{font-size:13px; color:var(--mut); text-align:center}
@@ -238,6 +265,16 @@ footer .tel{font-size:24px; font-weight:860; font-variation-settings:"wdth" 112;
   .logo img{height:32px}
   .lang button{padding:4px 8px}
   #cabBtn{padding:10px 14px}
+  .products{grid-template-columns:1fr 1fr; gap:10px}
+  .card .bd{padding:10px 11px 12px; gap:3px}
+  .card h3{font-size:14.5px; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+  .card .sub{font-size:12px; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden}
+  .price{font-size:16px; margin-top:4px}
+  .price small{font-size:11.5px}
+  .tag{top:6px; left:6px; padding:3px 8px; font-size:11px}
+  .vid-badge{bottom:6px; right:6px; font-size:11px; padding:3px 7px}
+  .cat-h h3{font-size:19px}
+  .cat-block{margin-bottom:26px}
 }
 </style>
 </head>
@@ -306,7 +343,7 @@ footer .tel{font-size:24px; font-weight:860; font-variation-settings:"wdth" 112;
       </div>
       <div class="menu-grid">
         <div class="rail" id="rail" role="tablist"></div>
-        <div class="products" id="grid"></div>
+        <div id="grid"></div>
       </div>
     </div>
   </section>
@@ -385,8 +422,8 @@ const T={
 uz:{brand_sub:"MARINADE",nav_menu:"Menyu",nav_branches:"Filiallar",nav_videos:"Videolar",nav_cash:"Keshbek",call:"Qo'ng'iroq",cabinet:"Kabinet",
 call_order:"Qo'ng'iroq qilib buyurtma berish",see_menu:"Menyuni ko'rish",f_branches:"filial",f_piece:"har bir dona",f_cash:"keshbek kassada",
 how_h:"Buyurtma qanday beriladi",how_1:"Menyudan tanlang",how_2:"Operatorga qo'ng'iroq qiling yoki Telegram'ga yozing",how_3:"Filialdan olib keting yoki yetkazib beramiz",how_4:"To'lov: kartaga yoki kassada",
-menu_h:"Menyu va narxlar",menu_p:"Narxlar dona uchun. Mahsulotni bosing — rasmlar, video va tarkibini ko'rasiz.",all:"Hammasi",
-low:"kam qoldi",hot:"achchiq",deal:"hafta taklifi",piece:"dona",sum:"so'm",video:"video",empty_cat:"Bu bo'limda hozircha mahsulot yo'q",
+menu_h:"Menyu va narxlar",menu_p:"Narx yonida birligi yozilgan (kg, dona, six). Mahsulotni bosing — rasmlar, video va tarkibini ko'rasiz.",all:"Hammasi",
+low:"kam qoldi",hot:"achchiq",deal:"hafta taklifi",piece:"dona",sum:"so'm",video:"video",empty_cat:"Bu bo'limda hozircha mahsulot yo'q",more_n:n=>`Yana ${n} ta ko'rsatish`,less:"Yig'ish",
 ingr:"Tarkibi",order_by_phone:"Buyurtma uchun qo'ng'iroq qiling",order_note:"To'lov kartaga yoki kassada. Olib ketish yoki yetkazib berish.",write_tg:"Telegram'ga yozish",
 calc_h:"Sayrga ketyapsizmi?",calc_people:"Kishi",calc_hours:"Soat",calc_out:(s,c,so)=>`Tavsiya: <b>${s} dona six</b> · <b>${c} kg ko'mir</b> · <b>${so} sous</b>`,
 br_h:"Filiallar",br_p:"Yaqin filialga qo'ng'iroq qiling yoki xaritada yo'lni oching.",h24:"24 soat ochiq",open_now:"hozir ochiq",closed_now:"hozir yopiq",yandex:"Yandex xarita",google:"Google xarita",
@@ -397,14 +434,15 @@ ft_ops:"Operatorlar",
 ph_title:"Kabinetga kirish",ph_sub:"Telefon raqamingizni kiriting — kod yuboramiz",phone:"Telefon raqami",get_code:"Kod olish",
 code_title:"Kodni kiriting",code_sub:(p)=>`+${p} raqamiga yuborildi`,code:"SMS kod",verify:"Tasdiqlash",back:"Orqaga",dev_code:(c)=>`Test rejimi — kod: ${c}`,
 reg_title:"Ismingiz",reg_sub:"Kassada sizni tanishlari uchun",fname:"Ism",lname:"Familiya",save:"Saqlash",
+nt_h:"Xabarlar",nt_empty:"Hozircha xabar yo'q",fb_h:"Xaridingiz yoqdimi?",fb_tap:"Yulduzchani bosing",fb_r:["","Juda yomon","Yomon","O'rtacha","Yaxshi","A'lo!"],fb_prod:"Qaysi mahsulot? (ixtiyoriy)",fb_none:"Tanlanmagan",fb_cm:"Izoh (ixtiyoriy)",fb_send:"Yuborish",fb_no:"Baholamayman",fb_thx:"Rahmat! Fikringiz bizga yaxshilanishga yordam beradi",
 my_h:"Keshbek kartam",balance:"Balans",tier:"Daraja",points:"ball",qr_note:"Kassada shu QR kodni ko'rsating yoki raqamingizni ayting",history:"Harakatlar",no_hist:"Hozircha harakat yo'q",logout:"Chiqish",
 r_kassa_earn:"Xarid uchun",r_kassa_spend:"Ishlatildi",r_kassa_undo:"Bekor qilindi",r_order_earn:"Buyurtma uchun",r_order_spend:"Buyurtmada ishlatildi",r_order_refund:"Qaytarildi",
 err_net:"Server bilan aloqa yo'q. Internetni tekshiring",err_unknown:"Xatolik yuz berdi, qayta urinib ko'ring",err_invalid_code:"Kod noto'g'ri",err_code_expired:"Kod eskirdi — qaytadan oling",err_too_many:"Birozdan so'ng urinib ko'ring",err_phone:"Raqamni to'liq kiriting: +998 90 123 45 67"},
 ru:{brand_sub:"MARINADE",nav_menu:"Меню",nav_branches:"Филиалы",nav_videos:"Видео",nav_cash:"Кэшбэк",call:"Позвонить",cabinet:"Кабинет",
 call_order:"Позвонить и заказать",see_menu:"Смотреть меню",f_branches:"филиалов",f_piece:"каждый кусочек",f_cash:"кэшбэк на кассе",
 how_h:"Как сделать заказ",how_1:"Выберите в меню",how_2:"Позвоните оператору или напишите в Telegram",how_3:"Заберите в филиале или закажите доставку",how_4:"Оплата: на карту или на кассе",
-menu_h:"Меню и цены",menu_p:"Цены за штуку. Нажмите на товар — фото, видео и состав.",all:"Все",
-low:"мало",hot:"острое",deal:"акция недели",piece:"шт",sum:"сум",video:"видео",empty_cat:"В этом разделе пока нет товаров",
+menu_h:"Меню и цены",menu_p:"Единица указана рядом с ценой (кг, шт, шампур). Нажмите на товар — фото, видео и состав.",all:"Все",
+low:"мало",hot:"острое",deal:"акция недели",piece:"шт",sum:"сум",video:"видео",empty_cat:"В этом разделе пока нет товаров",more_n:n=>`Показать ещё ${n}`,less:"Свернуть",
 ingr:"Состав",order_by_phone:"Для заказа позвоните",order_note:"Оплата на карту или на кассе. Самовывоз или доставка.",write_tg:"Написать в Telegram",
 calc_h:"Собираетесь на пикник?",calc_people:"Человек",calc_hours:"Часов",calc_out:(s,c,so)=>`Совет: <b>${s} шампуров</b> · <b>${c} кг угля</b> · <b>${so} соуса</b>`,
 br_h:"Филиалы",br_p:"Позвоните в ближайший филиал или откройте маршрут на карте.",h24:"круглосуточно",open_now:"сейчас открыто",closed_now:"сейчас закрыто",yandex:"Яндекс карты",google:"Google карты",
@@ -415,14 +453,15 @@ ft_ops:"Операторы",
 ph_title:"Вход в кабинет",ph_sub:"Введите номер телефона — отправим код",phone:"Номер телефона",get_code:"Получить код",
 code_title:"Введите код",code_sub:(p)=>`Отправлен на +${p}`,code:"Код из SMS",verify:"Подтвердить",back:"Назад",dev_code:(c)=>`Тестовый режим — код: ${c}`,
 reg_title:"Ваше имя",reg_sub:"Чтобы вас узнавали на кассе",fname:"Имя",lname:"Фамилия",save:"Сохранить",
+nt_h:"Уведомления",nt_empty:"Пока уведомлений нет",fb_h:"Как вам покупка?",fb_tap:"Нажмите на звёзды",fb_r:["","Очень плохо","Плохо","Нормально","Хорошо","Отлично!"],fb_prod:"Какой продукт? (необязательно)",fb_none:"Не выбрано",fb_cm:"Комментарий (необязательно)",fb_send:"Отправить",fb_no:"Не оценивать",fb_thx:"Спасибо! Ваш отзыв помогает нам стать лучше",
 my_h:"Моя карта кэшбэка",balance:"Баланс",tier:"Уровень",points:"баллов",qr_note:"Покажите этот QR-код на кассе или назовите номер",history:"Операции",no_hist:"Операций пока нет",logout:"Выйти",
 r_kassa_earn:"За покупку",r_kassa_spend:"Списано",r_kassa_undo:"Отменено",r_order_earn:"За заказ",r_order_spend:"Списано в заказе",r_order_refund:"Возврат",
 err_net:"Нет связи с сервером. Проверьте интернет",err_unknown:"Произошла ошибка, попробуйте ещё раз",err_invalid_code:"Неверный код",err_code_expired:"Код устарел — запросите новый",err_too_many:"Попробуйте чуть позже",err_phone:"Введите номер полностью: +998 90 123 45 67"},
 en:{brand_sub:"MARINADE",nav_menu:"Menu",nav_branches:"Branches",nav_videos:"Videos",nav_cash:"Cashback",call:"Call",cabinet:"My card",
 call_order:"Call to order",see_menu:"See the menu",f_branches:"branches",f_piece:"per piece",f_cash:"cashback at the till",
 how_h:"How to order",how_1:"Pick from the menu",how_2:"Call an operator or message us on Telegram",how_3:"Pick up at a branch or get delivery",how_4:"Pay by card transfer or at the till",
-menu_h:"Menu and prices",menu_p:"Prices are per piece. Tap an item for photos, video and ingredients.",all:"All",
-low:"low stock",hot:"spicy",deal:"deal of the week",piece:"pc",sum:"UZS",video:"video",empty_cat:"Nothing in this section yet",
+menu_h:"Menu and prices",menu_p:"The unit is shown next to the price (kg, pc, skewer). Tap a product for photos, video and ingredients.",all:"All",
+low:"low stock",hot:"spicy",deal:"deal of the week",piece:"pc",sum:"UZS",video:"video",empty_cat:"Nothing in this section yet",more_n:n=>`Show ${n} more`,less:"Show less",
 ingr:"Ingredients",order_by_phone:"Call to order",order_note:"Pay by card transfer or at the till. Pickup or delivery.",write_tg:"Message on Telegram",
 calc_h:"Heading out for a picnic?",calc_people:"People",calc_hours:"Hours",calc_out:(s,c,so)=>`Suggestion: <b>${s} skewers</b> · <b>${c} kg coal</b> · <b>${so} sauces</b>`,
 br_h:"Branches",br_p:"Call the nearest branch or open directions on the map.",h24:"open 24 hours",open_now:"open now",closed_now:"closed now",yandex:"Yandex Maps",google:"Google Maps",
@@ -433,6 +472,7 @@ ft_ops:"Operators",
 ph_title:"Sign in",ph_sub:"Enter your phone number — we'll text a code",phone:"Phone number",get_code:"Get code",
 code_title:"Enter the code",code_sub:(p)=>`Sent to +${p}`,code:"SMS code",verify:"Confirm",back:"Back",dev_code:(c)=>`Test mode — code: ${c}`,
 reg_title:"Your name",reg_sub:"So the cashier knows you",fname:"First name",lname:"Last name",save:"Save",
+nt_h:"Notifications",nt_empty:"No notifications yet",fb_h:"How was your purchase?",fb_tap:"Tap the stars",fb_r:["","Very bad","Bad","Okay","Good","Excellent!"],fb_prod:"Which product? (optional)",fb_none:"Not selected",fb_cm:"Comment (optional)",fb_send:"Send",fb_no:"Don't rate",fb_thx:"Thank you! Your feedback helps us improve",
 my_h:"My cashback card",balance:"Balance",tier:"Tier",points:"points",qr_note:"Show this QR code at the till or tell your number",history:"Activity",no_hist:"No activity yet",logout:"Sign out",
 r_kassa_earn:"Purchase",r_kassa_spend:"Spent",r_kassa_undo:"Reversed",r_order_earn:"Order",r_order_spend:"Spent on order",r_order_refund:"Refund",
 err_net:"Can't reach the server. Check your connection",err_unknown:"Something went wrong, try again",err_invalid_code:"Wrong code",err_code_expired:"Code expired — request a new one",err_too_many:"Try again in a moment",err_phone:"Enter the full number: +998 90 123 45 67"}
@@ -517,19 +557,40 @@ function renderRail(){
     r.append(b);
   });
 }
+const PER_CAT=6, expanded=new Set();
+function cardEl(p){
+  const hasVid=(p.media||[]).some(m=>m.type==='video');
+  const tag=p.lowStock?`<span class="tag low">${t('low')}</span>`:p.weeklyDeal?`<span class="tag deal">${t('deal')}</span>`:p.spicy?`<span class="tag hot">${t('hot')}</span>`:'';
+  const b=document.createElement('button'); b.className='card';
+  b.innerHTML=`<div class="ph"><img loading="lazy" src="${esc(img(p.image))}" alt="${esc(L(p.name))}" onerror="this.onerror=null;this.src='/app/assets/assets/img/logo.png';this.style.objectFit='contain'">${tag}${hasVid?`<span class="vid-badge">▶ ${t('video')}</span>`:''}</div>
+    <div class="bd"><h3>${esc(L(p.name))}</h3><p class="sub">${esc(L(p.subtitle))}</p>
+    <div class="price">${money(p.price)} <small>/ ${esc(L(p.unit)||t('piece'))}</small></div></div>`;
+  b.onclick=()=>openProduct(p);
+  return b;
+}
+function gridOf(list){ const d=document.createElement('div'); d.className='products'; list.forEach(p=>d.append(cardEl(p))); return d; }
 function renderGrid(){
   const g=$('#grid'); g.innerHTML='';
-  const list=products.filter(p=>cat==='all'||p.category===cat);
-  if(!list.length){ g.innerHTML=`<p class="empty">${t('empty_cat')}</p>`; return; }
-  list.forEach(p=>{
-    const hasVid=(p.media||[]).some(m=>m.type==='video');
-    const tag=p.lowStock?`<span class="tag low">${t('low')}</span>`:p.weeklyDeal?`<span class="tag deal">${t('deal')}</span>`:p.spicy?`<span class="tag hot">${t('hot')}</span>`:'';
-    const b=document.createElement('button'); b.className='card';
-    b.innerHTML=`<div class="ph"><img loading="lazy" src="${esc(img(p.image))}" alt="${esc(L(p.name))}" onerror="this.onerror=null;this.src='/app/assets/assets/img/logo.png';this.style.objectFit='contain'">${tag}${hasVid?`<span class="vid-badge">▶ ${t('video')}</span>`:''}</div>
-      <div class="bd"><h3>${esc(L(p.name))}</h3><p class="sub">${esc(L(p.subtitle))}</p>
-      <div class="price">${money(p.price)} <small>/ ${esc(L(p.unit)||t('piece'))}</small></div></div>`;
-    b.onclick=()=>openProduct(p);
-    g.append(b);
+  if(cat!=='all'){
+    const list=products.filter(p=>p.category===cat);
+    if(!list.length){ g.innerHTML=`<p class="empty">${t('empty_cat')}</p>`; return; }
+    g.append(gridOf(list)); return;
+  }
+  if(!products.length){ g.innerHTML=`<p class="empty">${t('empty_cat')}</p>`; return; }
+  cats().forEach(c=>{
+    const list=products.filter(p=>p.category===c.id); if(!list.length) return;
+    const open=expanded.has(c.id), shown=open?list:list.slice(0,PER_CAT);
+    const blk=document.createElement('div'); blk.className='cat-block'; blk.id='cat-'+c.id;
+    blk.innerHTML=`<div class="cat-h"><h3>${esc(L(c.name))}</h3><span class="sub" style="color:var(--mut)">${list.length}</span></div>`;
+    blk.append(gridOf(shown));
+    if(list.length>PER_CAT){
+      const m=document.createElement('button'); m.className='more';
+      m.textContent=open?t('less'):t('more_n',list.length-PER_CAT);
+      m.onclick=()=>{ open?expanded.delete(c.id):expanded.add(c.id); renderGrid();
+        if(open) document.getElementById('cat-'+c.id)?.scrollIntoView({block:'start'}); };
+      blk.append(m);
+    }
+    g.append(blk);
   });
 }
 function orderButtons(){
@@ -670,19 +731,76 @@ function openName(){
 }
 async function showCard(){
   let me,lo;
-  try{ [me,lo]=await Promise.all([api('GET','/me'),api('GET','/me/loyalty')]); }
+  let nt={items:[],unread:0}, fb={items:[]};
+  try{ [me,lo,nt,fb]=await Promise.all([api('GET','/me'),api('GET','/me/loyalty'),api('GET','/me/notifications').catch(()=>nt),api('GET','/me/feedback').catch(()=>fb)]); }
   catch(e){ if(!token){ openLogin(); return; } openModal(`<button class="x">✕</button><p class="err on">${errText(e)}</p>`); return; }
   const u=me.user, b=lo.loyalty, tier=(b.tier||'bronze').replace(/^./,c=>c.toUpperCase());
   openModal(`<button class="x" aria-label="✕">✕</button><h3>${t('my_h')}</h3><p class="sub">${esc((u.firstName+' '+u.lastName).trim())} · ${esc(prettyTel(u.phone))}</p>
     <div class="form">
+      ${fb.items.length?fbBox(fb.items[0]):''}
       <div class="lcard"><div class="tr"><span>${t('balance')}</span><span>${t('tier')}: <b>${tier}</b></span></div><div class="bal">${fmt(b.balance)} <span style="font-size:16px">${t('points')}</span></div></div>
       <div class="qr"><div id="qrBox"></div><b>${esc(prettyTel(u.phone))}</b><span>${t('qr_note')}</span></div>
       <b>${t('history')}</b>
       <div class="hist">${lo.history.length?lo.history.map(h=>`<div><span>${t('r_'+h.reason)}${h.amount?` · ${money(h.amount)}`:''}<br><small style="color:var(--mut)">${new Date(h.createdAt).toLocaleDateString()}</small></span><span class="${h.delta>=0?'plus':'minus'}">${h.delta>=0?'+':''}${fmt(h.delta)}</span></div>`).join(''):`<span style="color:var(--mut)">${t('no_hist')}</span>`}</div>
+      <b>${t('nt_h')}</b>
+      <div class="ntl">${nt.items.length?nt.items.slice(0,20).map(ntEl).join(''):`<span style="color:var(--mut)">${t('nt_empty')}</span>`}</div>
       <button class="btn btn-ghost" id="outBtn">${t('logout')}</button>
     </div>`);
+  if(fb.items.length) wireFb(fb.items[0]);
+  document.querySelectorAll('.nt[data-link]').forEach(n=>n.onclick=()=>openSiteLink(n.dataset.link));
+  if(nt.unread){ api('POST','/me/notifications/seen').catch(()=>{}); }
+  $('#cabBtn').classList.remove('cab-dot');
   try{ if(window.QRCode) new QRCode($('#qrBox'),{text:u.phone,width:168,height:168,correctLevel:QRCode.CorrectLevel.M}); }catch(_){}
   $('#outBtn').onclick=()=>{ token=null; ls.set('z_token',null); closeModal(); };
+}
+
+/* ============ xabarlar va baho ============ */
+function ago(iso){ const d=new Date(iso), m=Math.round((Date.now()-d)/60000);
+  if(m<60) return Math.max(m,1)+(lang==='ru'?' мин назад':lang==='en'?' min ago':' daqiqa oldin');
+  if(m<1440) return Math.round(m/60)+(lang==='ru'?' ч назад':lang==='en'?' h ago':' soat oldin');
+  return d.toLocaleDateString(); }
+function ntEl(n){
+  const link=n.link&&!n.link.startsWith('feedback:')?n.link:'';
+  return `<div class="nt"${link?` data-link="${esc(link)}"`:''}>${n.image?`<img src="${esc(img(n.image))}" alt="" loading="lazy">`:''}
+    <div><div class="tt">${esc(L(n.title))}${n.unread?'<i class="new"></i>':''}</div>${L(n.body)?`<div class="bd">${esc(L(n.body))}</div>`:''}<small>${ago(n.createdAt)}</small></div></div>`;
+}
+function openSiteLink(link){
+  closeModal();
+  if(link==='catalog'){ cat='all'; renderRail(); renderGrid(); }
+  else if(link.startsWith('cat:')){ cat=link.slice(4); renderRail(); renderGrid(); }
+  else if(link.startsWith('product:')){ const p=products.find(x=>x.id===link.slice(8)); if(p){ cat=p.category; renderRail(); renderGrid(); } }
+  else if(link==='stores'){ document.querySelector('#branches')?.scrollIntoView({behavior:'smooth'}); return; }
+  else if(link.startsWith('url:')){ window.open(link.slice(4),'_blank','noopener'); return; }
+  document.querySelector('#menu')?.scrollIntoView({behavior:'smooth'});
+}
+function fbBox(f){
+  const where=[f.store?L(f.store):'', f.amount?money(f.amount):''].filter(Boolean).join(' · ');
+  const opts=[...products].sort((a,b)=>L(a.name).localeCompare(L(b.name))).map(p=>`<option value="${esc(p.id)}">${esc(L(p.name))}</option>`).join('');
+  return `<div class="fbx" id="fbx"><b>${t('fb_h')}</b>${where?`<div class="where">${esc(where)}</div>`:''}
+    <div class="stars" role="radiogroup">${[1,2,3,4,5].map(i=>`<button type="button" data-r="${i}" aria-label="${i}">★</button>`).join('')}</div>
+    <div class="lbl" id="fbLbl">${t('fb_tap')}</div>
+    <select id="fbP" aria-label="${t('fb_prod')}"><option value="">${t('fb_prod')}</option>${opts}</select>
+    <textarea id="fbC" maxlength="1000" placeholder="${t('fb_cm')}"></textarea>
+    <div class="err" id="fbErr"></div>
+    <div class="row2"><button class="btn btn-brand" id="fbGo" disabled>${t('fb_send')}</button><button class="btn btn-ghost" id="fbNo">${t('fb_no')}</button></div></div>`;
+}
+function wireFb(f){
+  let r=0;
+  document.querySelectorAll('#fbx .stars button').forEach(b=>b.onclick=()=>{ r=+b.dataset.r;
+    document.querySelectorAll('#fbx .stars button').forEach(x=>x.classList.toggle('on',+x.dataset.r<=r));
+    $('#fbLbl').textContent=t('fb_r')[r]; $('#fbGo').disabled=false; });
+  $('#fbGo').onclick=async()=>{
+    $('#fbGo').disabled=true;
+    try{ await api('POST','/me/feedback',{requestId:f.id,rating:r,comment:$('#fbC').value.trim()||null,productId:$('#fbP').value||null,source:'site'});
+      $('#fbx').outerHTML=`<div class="ok">${t('fb_thx')}</div>`; }
+    catch(e){ const el=$('#fbErr'); el.textContent=errText(e); el.classList.add('on'); $('#fbGo').disabled=false; }
+  };
+  $('#fbNo').onclick=()=>{ api('POST',`/me/feedback/${f.id}/dismiss`).catch(()=>{}); $('#fbx').remove(); };
+}
+async function cabDot(){
+  if(!token) return;
+  try{ const [n,f]=await Promise.all([api('GET','/me/notifications'),api('GET','/me/feedback')]);
+    $('#cabBtn').classList.toggle('cab-dot', n.unread>0||f.items.length>0); }catch(_){}
 }
 
 /* ============ language ============ */
@@ -701,7 +819,7 @@ document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{ lang=b.data
     const [se,pr,st]=await Promise.all([api('GET','/settings'),api('GET','/products'),api('GET','/stores')]);
     S=se.settings; products=pr.products; stores=st.stores;
   }catch(_){}
-  applyLang(); seo();
+  applyLang(); seo(); cabDot();
 })();
 </script>
 </body>

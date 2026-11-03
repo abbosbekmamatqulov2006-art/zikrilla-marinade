@@ -40,6 +40,7 @@ class User(Base):
     points: Mapped[int] = mapped_column(Integer, default=0)
     points_lifetime: Mapped[int] = mapped_column(Integer, default=0)
     iiko_customer_id: Mapped[str | None] = mapped_column(String(64))
+    notif_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
     orders: Mapped[list["Order"]] = relationship(back_populates="user")
@@ -154,6 +155,58 @@ class Setting(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)
 
 
+class Notification(Base):
+    """Ilova va sayt kabinetidagi xabarlar. user_id bo'sh — hammaga (aksiya, yangi tovar, yangi filial)."""
+    __tablename__ = "notifications"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[str | None] = mapped_column(String(32), index=True)
+    kind: Mapped[str] = mapped_column(String(16), default="promo")   # promo | product | store | feedback | system
+    title: Mapped[dict] = mapped_column(JSON)                        # {uz, ru, en}
+    body: Mapped[dict | None] = mapped_column(JSON)
+    image: Mapped[str | None] = mapped_column(String(256))
+    link: Mapped[str | None] = mapped_column(String(256))            # catalog | cat:<id> | product:<id> | url:... | feedback:<id>
+    pushed: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, index=True)
+
+
+class DeviceToken(Base):
+    """Push-xabar uchun telefon tokeni (Firebase)."""
+    __tablename__ = "device_tokens"
+    token: Mapped[str] = mapped_column(String(512), primary_key=True)
+    user_id: Mapped[str | None] = mapped_column(String(32), index=True)
+    platform: Mapped[str] = mapped_column(String(16), default="android")
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)
+
+
+class FeedbackRequest(Base):
+    """Xariddan keyin baho so'rovi (iiko kassasidagi xarid yoki ilova buyurtmasi)."""
+    __tablename__ = "feedback_requests"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[str] = mapped_column(String(32), index=True)
+    ref: Mapped[str] = mapped_column(String(128), unique=True)       # xaridning noyob belgisi
+    store_id: Mapped[str | None] = mapped_column(String(32))
+    amount: Mapped[int | None] = mapped_column(Integer)
+    purchased_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    due_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    status: Mapped[str] = mapped_column(String(12), default="pending")  # pending | done | dismissed | expired
+    notified: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class Review(Base):
+    """Mijoz bahosi va izohi."""
+    __tablename__ = "reviews"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[str] = mapped_column(String(32), index=True)
+    request_id: Mapped[int | None] = mapped_column(Integer)
+    store_id: Mapped[str | None] = mapped_column(String(32), index=True)
+    product_id: Mapped[str | None] = mapped_column(String(32), index=True)
+    rating: Mapped[int] = mapped_column(Integer)
+    comment: Mapped[str | None] = mapped_column(Text)
+    source: Mapped[str] = mapped_column(String(12), default="app")    # app | site
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, index=True)
+
+
 class Event(Base):
     __tablename__ = "events"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -175,6 +228,7 @@ _MIGRATIONS = [
     "ALTER TABLE loyalty_tx ADD COLUMN IF NOT EXISTS amount INTEGER",
     "ALTER TABLE loyalty_tx ADD COLUMN IF NOT EXISTS store_id VARCHAR(32)",
     "ALTER TABLE loyalty_tx ADD COLUMN IF NOT EXISTS note VARCHAR(128)",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS notif_seen_at TIMESTAMPTZ",
 ]
 
 

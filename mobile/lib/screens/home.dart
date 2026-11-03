@@ -10,6 +10,7 @@ import '../site.dart';
 import 'calculator.dart';
 import 'catalog.dart';
 import 'contact.dart';
+import 'notifications.dart';
 import 'school.dart';
 import 'stores.dart';
 
@@ -24,6 +25,21 @@ class _HomeScreenState extends State<HomeScreen> {
   int hours = 4;
   int banner = 0;
 
+  /// Xariddan keyingi baho so'rovi bo'lsa — bosh sahifada bir marta o'zi ochiladi.
+  bool _asking = false;
+  void _maybeAskFeedback(AppState s) {
+    if (_asking || s.tab != 0 || s.pendingFeedback.isEmpty) return;
+    final ask = s.pendingFeedback.first;
+    if (s.feedbackShown.contains(ask.id)) return;
+    _asking = true;
+    Future.delayed(const Duration(milliseconds: 800), () {
+      _asking = false;
+      if (!mounted || s.feedbackShown.contains(ask.id) || s.tab != 0) return;
+      if (ModalRoute.of(context)?.isCurrent != true) return;
+      showFeedbackSheet(context, ask);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
@@ -36,6 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final deals = products.where((p) => p.weeklyDeal).toList();
     final school = site.school;
     final videos = site.videos;
+    _maybeAskFeedback(s);
 
     return SafeArea(
       bottom: false,
@@ -60,6 +77,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   const Logo(height: 34),
                   const Spacer(),
+                  Badge(
+                    isLabelVisible: s.unread > 0,
+                    backgroundColor: C.red,
+                    offset: const Offset(-2, 2),
+                    label: Text(s.unread > 9 ? '9+' : '${s.unread}', style: tsx(10, w: FontWeight.w900, c: C.white)),
+                    child: CircleIconButton(
+                      icon: Icons.notifications_none_rounded,
+                      onTap: () => push(context, const NotificationsScreen()),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
                   CircleIconButton(icon: Icons.call_rounded, onTap: () => callPhone(site.phone)),
                 ],
               ),
@@ -414,19 +442,7 @@ class _BannerPage extends StatelessWidget {
   final SiteBanner b;
   const _BannerPage(this.b);
 
-  void _open(BuildContext context) {
-    final link = b.link;
-    if (link == 'catalog') {
-      goTab(context, 1);
-    } else if (link.startsWith('cat:')) {
-      CatalogScreen.pendingCategory.value = link.substring(4);
-      goTab(context, 1);
-    } else if (link == 'school') {
-      push(context, const SchoolScreen());
-    } else if (link.startsWith('url:') && link.length > 4) {
-      openLink(link.substring(4));
-    }
-  }
+  void _open(BuildContext context) => openAppLink(context, b.link);
 
   @override
   Widget build(BuildContext context) {

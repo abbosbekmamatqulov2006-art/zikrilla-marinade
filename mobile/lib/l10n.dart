@@ -481,6 +481,28 @@ const Map<String, Map<String, String>> _strings = {
   'order_now': {'ru': 'Заказать', 'en': 'Order'},
   'cashback_pct': {'ru': '{n}% кешбэк с каждой покупки', 'en': '{n}% cashback on every purchase'},
   'school_empty': {'ru': 'Пока нет статей', 'en': 'No articles yet'},
+
+  // ---------- xabarlar va baholar ----------
+  'notif_empty': {'ru': 'Пока уведомлений нет. Здесь появятся акции, новинки и новые филиалы.', 'en': 'No notifications yet. Deals, new products and new branches will appear here.'},
+  'ago_min': {'ru': '{n} мин назад', 'en': '{n} min ago'},
+  'ago_h': {'ru': '{n} ч назад', 'en': '{n} h ago'},
+  'fb_title': {'ru': 'Как вам покупка?', 'en': 'How was your purchase?'},
+  'fb_cta': {'ru': 'Оцените — это займёт 10 секунд', 'en': 'Rate it — takes 10 seconds'},
+  'fb_tap': {'ru': 'Нажмите на звёзды', 'en': 'Tap the stars'},
+  'fb_r1': {'ru': 'Очень плохо', 'en': 'Very bad'},
+  'fb_r2': {'ru': 'Плохо', 'en': 'Bad'},
+  'fb_r3': {'ru': 'Нормально', 'en': 'Okay'},
+  'fb_r4': {'ru': 'Хорошо', 'en': 'Good'},
+  'fb_r5': {'ru': 'Отлично!', 'en': 'Excellent!'},
+  'fb_product': {'ru': 'Какой продукт? (необязательно)', 'en': 'Which product? (optional)'},
+  'fb_product_none': {'ru': 'Не выбрано', 'en': 'Not selected'},
+  'fb_comment': {'ru': 'Комментарий (необязательно)', 'en': 'Comment (optional)'},
+  'fb_send': {'ru': 'Отправить', 'en': 'Send'},
+  'fb_later': {'ru': 'Позже', 'en': 'Later'},
+  'fb_no': {'ru': 'Не оценивать', 'en': 'Don’t rate'},
+  'fb_thanks': {'ru': 'Спасибо! Ваш отзыв помогает нам стать лучше', 'en': 'Thank you! Your feedback helps us improve'},
+  'fb_already': {'ru': 'Эта покупка уже оценена', 'en': 'This purchase is already rated'},
+  'fb_error': {'ru': 'Не удалось отправить. Попробуйте ещё раз', 'en': 'Could not send. Please try again'},
 };
 
 /// All keys defined for ru/en (used by tests to check Uzbek coverage).

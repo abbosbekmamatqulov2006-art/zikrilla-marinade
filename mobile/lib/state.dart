@@ -64,6 +64,7 @@ class AppState extends ChangeNotifier {
     if (status == AuthStatus.ready) {
       unawaited(refreshMe());
       unawaited(loadOrders());
+      unawaited(loadInbox());
     }
   }
 
@@ -90,6 +91,7 @@ class AppState extends ChangeNotifier {
       status = AuthStatus.ready;
       unawaited(refreshMe());
       unawaited(loadOrders());
+      unawaited(loadInbox());
     } else {
       await _setUser(User(id: '', phone: phone));
       status = AuthStatus.needsProfile;
@@ -102,6 +104,7 @@ class AppState extends ChangeNotifier {
     status = AuthStatus.ready;
     notifyListeners();
     unawaited(refreshMe());
+    unawaited(loadInbox());
     unawaited(locateIfPermitted());
   }
 
@@ -130,6 +133,9 @@ class AppState extends ChangeNotifier {
     user = null;
     cart.clear();
     history = [];
+    notifications = const [];
+    unread = 0;
+    pendingFeedback = const [];
     activeOrder = null;
     _orderPoll?.cancel();
     tab = 0;
@@ -180,7 +186,59 @@ class AppState extends ChangeNotifier {
       loadProducts(),
       loadStores(),
       if (status == AuthStatus.ready) refreshMe(),
+      if (status == AuthStatus.ready) loadInbox(),
     ]);
+  }
+
+  // ---------- xabarlar va baholar ----------
+  List<AppNotification> notifications = const [];
+  int unread = 0;
+  List<FeedbackAsk> pendingFeedback = const [];
+
+  /// Baho oynasi shu ochilishda ko'rsatilganmi (har ochilishda bir martadan ko'p chiqmasin).
+  final Set<int> feedbackShown = {};
+
+  Future<void> loadInbox() async {
+    if (backend.isMock || status != AuthStatus.ready) return;
+    try {
+      final (list, n) = await backend.notifications();
+      notifications = list;
+      unread = n;
+      pendingFeedback = await backend.pendingFeedback();
+      notifyListeners();
+    } on ApiException catch (e) {
+      if (e.code == 'unauthorized') await logout();
+    } catch (_) {}
+  }
+
+  Future<void> markInboxSeen() async {
+    if (unread == 0) return;
+    unread = 0;
+    notifyListeners();
+    try {
+      await backend.markNotificationsSeen();
+    } catch (_) {}
+  }
+
+  /// Baho yuborish. Xato bo'lsa [ApiException] tashlaydi.
+  Future<void> sendFeedback({int? requestId, required int rating, String? comment, String? productId, String? storeId}) async {
+    await backend.sendFeedback(
+      requestId: requestId,
+      rating: rating,
+      comment: comment,
+      productId: productId,
+      storeId: storeId,
+    );
+    pendingFeedback = pendingFeedback.where((f) => f.id != requestId).toList();
+    notifyListeners();
+  }
+
+  Future<void> dismissFeedback(int id) async {
+    pendingFeedback = pendingFeedback.where((f) => f.id != id).toList();
+    notifyListeners();
+    try {
+      await backend.dismissFeedback(id);
+    } catch (_) {}
   }
 
   // ---------- language ----------

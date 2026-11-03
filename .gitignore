@@ -30,3 +30,9 @@ mobile/ios/Pods/
 Thumbs.db
 .idea/
 .vscode/
+
+# Firebase kaliti
+server/app/firebase.json
+firebase*.json
+google-services.json
+GoogleService-Info.plist

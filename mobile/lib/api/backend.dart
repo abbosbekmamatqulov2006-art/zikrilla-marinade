@@ -53,6 +53,14 @@ abstract class Backend {
   /// Sayt va ilova sozlamalari (admin panel → Sozlamalar / Ilova).
   Future<Map<String, dynamic>> settings();
 
+  // ---------- xabarlar va baholar ----------
+  Future<(List<AppNotification>, int)> notifications();
+  Future<void> markNotificationsSeen();
+  Future<List<FeedbackAsk>> pendingFeedback();
+  Future<void> sendFeedback({int? requestId, required int rating, String? comment, String? productId, String? storeId});
+  Future<void> dismissFeedback(int id);
+  Future<void> registerDevice(String token, String platform);
+
   static Backend create() => apiUrl.isEmpty ? MockBackend() : HttpBackend(apiUrl);
 }
 
@@ -149,6 +157,42 @@ class HttpBackend implements Backend {
   @override
   Future<Map<String, dynamic>> settings() async =>
       (await _req('GET', '/settings'))['settings'] as Map<String, dynamic>? ?? const {};
+
+  @override
+  Future<(List<AppNotification>, int)> notifications() async {
+    final j = await _req('GET', '/me/notifications');
+    return (
+      [for (final n in j['items'] as List? ?? const []) AppNotification.fromJson(n as Map<String, dynamic>)],
+      (j['unread'] as num? ?? 0).toInt(),
+    );
+  }
+
+  @override
+  Future<void> markNotificationsSeen() => _req('POST', '/me/notifications/seen');
+
+  @override
+  Future<List<FeedbackAsk>> pendingFeedback() async => [
+    for (final f in (await _req('GET', '/me/feedback'))['items'] as List? ?? const [])
+      FeedbackAsk.fromJson(f as Map<String, dynamic>),
+  ];
+
+  @override
+  Future<void> sendFeedback({int? requestId, required int rating, String? comment, String? productId, String? storeId}) =>
+      _req('POST', '/me/feedback', {
+        'requestId': ?requestId,
+        'rating': rating,
+        if (comment != null && comment.trim().isNotEmpty) 'comment': comment.trim(),
+        'productId': ?productId,
+        'storeId': ?storeId,
+        'source': 'app',
+      });
+
+  @override
+  Future<void> dismissFeedback(int id) => _req('POST', '/me/feedback/$id/dismiss');
+
+  @override
+  Future<void> registerDevice(String token, String platform) =>
+      _req('POST', '/me/device', {'token': token, 'platform': platform});
 
   @override
   Future<OrderInfo> createOrder(OrderRequest req) async =>
@@ -255,6 +299,25 @@ class MockBackend implements Backend {
 
   @override
   Future<Map<String, dynamic>> settings() async => const {};
+
+  @override
+  Future<(List<AppNotification>, int)> notifications() async => (const <AppNotification>[], 0);
+
+  @override
+  Future<void> markNotificationsSeen() async {}
+
+  @override
+  Future<List<FeedbackAsk>> pendingFeedback() async => const [];
+
+  @override
+  Future<void> sendFeedback({int? requestId, required int rating, String? comment, String? productId, String? storeId}) =>
+      _delay();
+
+  @override
+  Future<void> dismissFeedback(int id) async {}
+
+  @override
+  Future<void> registerDevice(String token, String platform) async {}
 
   @override
   Future<OrderInfo> createOrder(OrderRequest req) async {

@@ -248,3 +248,54 @@ class OrderInfo {
     createdAt: DateTime.tryParse(j['createdAt'] as String? ?? '') ?? DateTime.now(),
   );
 }
+
+/// Xabar (bildirishnoma): aksiya, yangi mahsulot, yangi filial yoki baho so'rovi.
+class AppNotification {
+  final int id;
+  final String kind; // promo | product | store | feedback | system
+  final L title;
+  final L body;
+  final String image;
+  final String link; // catalog | cat:<kod> | product:<id> | url:<manzil> | stores | feedback:<id>
+  final DateTime createdAt;
+  final bool unread;
+  const AppNotification({
+    required this.id,
+    required this.kind,
+    required this.title,
+    required this.body,
+    required this.image,
+    required this.link,
+    required this.createdAt,
+    required this.unread,
+  });
+
+  factory AppNotification.fromJson(Map<String, dynamic> j) => AppNotification(
+    id: (j['id'] as num).toInt(),
+    kind: j['kind'] as String? ?? 'promo',
+    title: L.fromJson(j['title'] as Map<String, dynamic>? ?? const {}),
+    body: L.fromJson(j['body'] as Map<String, dynamic>? ?? const {}),
+    image: j['image'] as String? ?? '',
+    link: j['link'] as String? ?? '',
+    createdAt: (DateTime.tryParse(j['createdAt'] as String? ?? '') ?? DateTime.now()).toLocal(),
+    unread: j['unread'] as bool? ?? false,
+  );
+}
+
+/// Xariddan keyin baho so'rovi.
+class FeedbackAsk {
+  final int id;
+  final String? storeId;
+  final L? store;
+  final int amount;
+  final DateTime purchasedAt;
+  const FeedbackAsk({required this.id, this.storeId, this.store, required this.amount, required this.purchasedAt});
+
+  factory FeedbackAsk.fromJson(Map<String, dynamic> j) => FeedbackAsk(
+    id: (j['id'] as num).toInt(),
+    storeId: j['storeId'] as String?,
+    store: j['store'] == null ? null : L.fromJson(j['store'] as Map<String, dynamic>),
+    amount: (j['amount'] as num? ?? 0).round(),
+    purchasedAt: (DateTime.tryParse(j['purchasedAt'] as String? ?? '') ?? DateTime.now()).toLocal(),
+  );
+}

@@ -7,7 +7,8 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from .models import init_db
-from .routers import admin_routes, auth_routes, content_routes, core_routes, iiko_routes
+from . import engage
+from .routers import admin_routes, auth_routes, content_routes, core_routes, engage_routes, iiko_routes
 
 logging.basicConfig(level=logging.INFO)
 
@@ -31,6 +32,7 @@ async def api_exception_handler(request: Request, exc: HTTPException):
 @app.on_event("startup")
 def startup():
     init_db()
+    engage.start_background()
 
 
 @app.get("/health")
@@ -54,6 +56,8 @@ app.include_router(admin_routes.router)
 app.include_router(iiko_routes.router)
 app.include_router(content_routes.public)
 app.include_router(content_routes.admin)
+app.include_router(engage_routes.public)
+app.include_router(engage_routes.admin)
 
 _base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
